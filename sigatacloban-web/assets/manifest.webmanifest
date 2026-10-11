@@ -1,0 +1,14 @@
+{
+  "name": "SigaTacloban",
+  "short_name": "SigaTacloban",
+  "description": "Fire risk intelligence and operational decision support for Tacloban City.",
+  "start_url": "../index.html",
+  "scope": "../",
+  "display": "standalone",
+  "background_color": "#FBF7F3",
+  "theme_color": "#220901",
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
