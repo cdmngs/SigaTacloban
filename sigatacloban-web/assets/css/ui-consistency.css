@@ -1,0 +1,310 @@
+html{font-size:16px!important;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+#app-shell .app-frame :where(*),.login-page :where(*),.app-error-page :where(*){font-family:var(--ui-font-family-body);font-size:var(--ui-text-body);letter-spacing:0}
+#app-shell .app-frame h1,.login-page .login-message h1,.app-error-page h1{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-page-title);font-weight:var(--ui-weight-medium)}
+#app-shell .app-frame h2,#app-shell .app-frame h3,#app-shell .app-frame h4,.modal-panel>header h2{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-card-title);font-weight:var(--ui-weight-medium)}
+#app-shell .app-frame .topbar-page-label{font-family:var(--ui-font-family-body);font-size:var(--ui-text-topbar-title);font-weight:var(--ui-weight-semibold)}
+#app-shell .app-frame .eyebrow,#app-shell .app-frame .nav-group-label,.login-page .eyebrow{font-size:var(--ui-text-eyebrow);font-weight:var(--ui-weight-bold)}
+#app-shell .app-frame .trend-kpi>strong,#app-shell .app-frame .stat-card .stat-copy>strong,#app-shell .app-frame .user-stat strong{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-stat-number);font-weight:var(--ui-weight-semibold)}
+#app-shell .app-frame .shared-empty-state strong,#app-shell .app-frame .alerts-empty strong,#app-shell .app-frame .empty-state strong{font-size:var(--ui-text-empty-title);font-weight:var(--ui-weight-bold)}
+#app-shell .app-frame .weather-hero-condition>div>strong,#app-shell .app-frame .risk-gauge>strong{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-display);font-weight:var(--ui-weight-semibold)}
+#app-shell .app-frame .risk-chip,#app-shell .app-frame .filter-chip,#app-shell .app-frame .filter-bar .chip{font-size:var(--ui-text-chip);font-weight:var(--ui-weight-semibold);border-radius:var(--ui-chip-radius)}
+#app-shell .app-frame .risk-chip{color:var(--ui-color-text-primary)}
+#app-shell .app-frame button,#app-shell .app-frame input,#app-shell .app-frame select,#app-shell .app-frame textarea,#app-shell .app-frame [role=button],.login-page button,.login-page input,.login-page select,.login-page textarea{font-family:var(--ui-font-family-body);font-size:var(--ui-text-body);letter-spacing:0}
+#app-shell .app-frame button,#app-shell .app-frame [role=button],.login-page button{min-height:var(--ui-control-height);min-width:var(--ui-tap-target);height:var(--ui-control-height);border-radius:var(--ui-control-radius)}
+#app-shell .app-frame input:not([type=checkbox]):not([type=radio]):not([type=range]),#app-shell .app-frame select,.login-page input:not([type=checkbox]):not([type=radio]),.login-page select{height:var(--ui-control-height);min-height:var(--ui-control-height);border-radius:var(--ui-control-radius)}
+#app-shell .app-frame textarea,.login-page textarea{height:auto;min-height:72px;border-radius:var(--ui-control-radius)}
+#app-shell .app-frame .user-search,#app-shell .app-frame .incident-search{height:var(--ui-control-height);min-height:var(--ui-control-height)}
+#app-shell .app-frame .icon-button,#app-shell .app-frame .user-row-menu>button{width:var(--ui-tap-target);height:var(--ui-tap-target);min-width:var(--ui-tap-target);min-height:var(--ui-tap-target)}
+#app-shell .app-frame .sidebar .icon-button{width:var(--ui-tap-target);height:var(--ui-tap-target)}
+#app-shell .app-frame input[type=range]{height:var(--ui-control-height);touch-action:pan-y}
+#app-shell .app-frame .nav-link{height:36px;min-height:36px}
+#app-shell .app-frame .surface-card:not(.weather-hero):not(.dashboard-weather):not(.coverage-map-card):not(.incident-map-card),#app-shell .app-frame .card:not(.coverage-map-card):not(.incident-map-card):not(.coverage-toolbar):not(.incident-filter-card){min-width:0;padding:var(--ui-card-padding);border:1px solid var(--ui-color-border-contrast);border-radius:var(--ui-card-radius);background:var(--ui-color-surface);box-shadow:var(--ui-card-shadow)}
+#app-shell .app-frame .coverage-map-card,#app-shell .app-frame .incident-map-card{padding:0}
+#app-shell .app-frame .trend-kpi{padding:var(--ui-kpi-padding)}
+#app-shell .app-frame .users-table-card,#app-shell .app-frame .permissions-card{padding:var(--ui-card-padding)}
+#app-shell .app-frame .page-content:not(.page-map):not(:has(.incidents-page)):not(:has(.coverage-page)){padding:25px var(--ui-page-inline-padding) 34px}
+#app-shell .app-frame .page-map{padding-inline:var(--ui-page-inline-padding)}
+#app-shell .app-frame .page-content:has(.incidents-page),#app-shell .app-frame .page-content:has(.coverage-page){padding-inline:var(--ui-page-inline-padding)}
+#app-shell .app-frame .phase3-page,#app-shell .app-frame .phase4-page,#app-shell .app-frame .dashboard-content{width:100%;max-width:var(--ui-page-max-width);margin-inline:auto}
+#app-shell .app-frame .phase3-heading,#app-shell .app-frame .phase4-heading,#app-shell .app-frame .page-heading{margin-bottom:var(--ui-page-header-card-gap)}
+#app-shell .app-frame .trend-kpis,#app-shell .app-frame .trend-charts-grid{gap:var(--ui-card-gap)}
+#app-shell .app-frame .data-table th,#app-shell .app-frame .data-table td,#app-shell .app-frame .user-table th,#app-shell .app-frame .user-table td,#app-shell .app-frame .incident-table th,#app-shell .app-frame .incident-table td{font-size:var(--ui-text-table)}
+#app-shell .app-frame .user-table small,#app-shell .app-frame .incident-table small{font-size:var(--ui-text-table-secondary)}
+#app-shell .app-frame .avatar,#app-shell .app-frame .user-avatar{width:var(--ui-avatar-size)!important;height:var(--ui-avatar-size)!important;font-size:var(--ui-text-avatar)}
+#app-shell .app-frame svg:not(.risk-gauge svg):not(.leaflet-pane svg):not(.login-map-art svg){width:var(--ui-icon-standard);height:var(--ui-icon-standard);stroke-width:var(--ui-icon-stroke);color:currentColor;flex:none}
+#app-shell .app-frame .trend-kpi svg{width:var(--ui-icon-stat-delta);height:var(--ui-icon-stat-delta)}
+#app-shell .app-frame .export-csv-button svg{width:var(--ui-icon-export);height:var(--ui-icon-export)}
+#app-shell .app-frame .shared-empty-state-icon svg,#app-shell .app-frame .empty-icon svg{width:var(--ui-icon-empty-state);height:var(--ui-icon-empty-state)}
+#app-shell .app-frame .weather-chart-wrap{position:relative}
+#app-shell .app-frame .dashboard-weather .live-pill{color:var(--ui-color-text-primary)}
+#app-shell .app-frame .gauge-comparison .risk-gauge{width:156px;height:103px;margin:0 auto}
+#app-shell .app-frame .gauge-comparison .risk-gauge svg{width:156px;height:92px}
+#app-shell .app-frame .city-risk-card .risk-gauge{transform:none}
+#app-shell .app-frame .trend-good>span{color:var(--ui-color-text-primary)}
+#app-shell .app-frame .trend-good>span svg{color:var(--ui-risk-low)}
+#app-shell .app-frame .coverage-side-column>.coverage-score-card,#app-shell .app-frame .coverage-side-column>.underserved-card,#app-shell .app-frame .report-builder-card{border:1px solid var(--ui-color-border-contrast);border-radius:var(--ui-card-radius);background:var(--ui-color-surface);box-shadow:var(--ui-card-shadow)}
+#app-shell .app-frame .report-builder-card{padding:var(--ui-card-padding)}
+#app-shell .app-frame .risk-map-layout .map-side-panel{min-height:0;border:1px solid var(--ui-color-border-contrast);border-radius:var(--ui-card-radius);background:var(--ui-color-surface);box-shadow:var(--ui-card-shadow)}
+#app-shell .app-frame .risk-map-layout .map-side-panel-content{min-height:0;overscroll-behavior-y:contain}
+#app-shell .app-frame .risk-map-layout .map-panel-eyebrow{font-size:var(--ui-text-eyebrow)}
+#app-shell .app-frame .risk-map-layout .map-mode-switch button.active,#app-shell .app-frame .risk-map-layout .risk-map-mode-control button.active{background:var(--ui-color-text-primary);color:#fff}
+#app-shell .app-frame .prediction-timeline .timeline-ticks button.active{color:var(--ui-color-text-primary)}
+#app-shell .app-frame .risk-map-layout .map-empty-banner{margin-bottom:8px}
+#app-shell .app-frame .risk-map-layout .map-side-panel-footer p{font-size:var(--ui-text-caption)}
+#app-shell .app-frame .risk-map-layout .selected-area-slot .shared-empty-state small{font-size:var(--ui-text-caption)}
+.leaflet-container .leaflet-control-attribution a{color:var(--ui-color-text-primary)!important}
+#app-shell .app-frame .checkbox-label,#app-shell .app-frame .report-section-checks label{min-height:var(--ui-tap-target)}
+.modal-panel{border-color:var(--ui-color-border-contrast);border-radius:var(--ui-card-radius);background:var(--ui-color-surface);box-shadow:var(--ui-card-shadow);font-family:var(--ui-font-family-body);font-size:var(--ui-text-body)}
+.modal-panel>header h2,.modal-panel>header .modal-heading-copy h2,.modal-panel.incident-form-modal>header h2,.modal-panel.coverage-plan-modal>header h2{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-card-title);font-weight:var(--ui-weight-medium)}
+.modal-panel .dialog-copy,.modal-panel .coverage-plan-content,.modal-panel .user-form>label,.modal-panel .incident-field>label{font-size:var(--ui-text-body)}
+.modal-panel button,.modal-panel input:not([type=checkbox]):not([type=radio]):not([type=range]),.modal-panel select{height:var(--ui-control-height);min-height:var(--ui-control-height);font-family:var(--ui-font-family-body);font-size:var(--ui-text-body);border-radius:var(--ui-control-radius)}
+.modal-panel textarea{height:auto;min-height:72px;font-family:var(--ui-font-family-body);font-size:var(--ui-text-body);border-radius:var(--ui-control-radius)}
+.modal-panel .user-form input:not([type=checkbox]),.modal-panel .user-form select,.modal-panel.incident-form-modal .incident-field input,.modal-panel.incident-form-modal .incident-field select{height:var(--ui-control-height);min-height:var(--ui-control-height);font-family:var(--ui-font-family-body);font-size:var(--ui-text-body);border-radius:var(--ui-control-radius)}
+.modal-panel .user-form-actions .button,.modal-panel .incident-form-actions .button,.modal-panel .coverage-plan-actions .button,.modal-panel.user-form-modal .user-form-actions .button,.modal-panel.incident-form-modal .incident-form-actions .button,.modal-panel.coverage-plan-modal .coverage-plan-actions .button{height:var(--ui-control-height);min-height:var(--ui-control-height);font-size:var(--ui-text-button)}
+.modal-panel .plan-instruction,.modal-panel .plan-location-coordinate,.modal-panel .plan-simulation-note,.modal-panel .coverage-no-data-note{font-size:var(--ui-text-modal-body)}
+.toast{border-color:var(--ui-color-border-contrast);border-radius:var(--ui-control-radius);font-family:var(--ui-font-family-body);font-size:var(--ui-text-body)}
+.toast-action,.toast-dismiss{min-width:var(--ui-tap-target);min-height:var(--ui-tap-target);height:var(--ui-control-height);font-size:var(--ui-text-button)}
+#app-shell .app-frame .profile-menu,#app-shell .app-frame .alerts-popover{border-color:var(--ui-color-border-contrast);border-radius:var(--ui-control-radius)}
+#app-shell .app-frame .bottom-nav-item{height:var(--ui-control-height);font-size:var(--ui-text-body)}
+@media(max-width:767px){.toast-stack{right:12px;width:min(360px,calc(100% - 24px));max-width:calc(100vw - 24px);bottom:82px}}
+.login-page button,.login-page input:not([type=checkbox]):not([type=radio]),.login-page select,.login-page textarea{min-height:var(--ui-control-height)}
+.forbidden-page .forbidden-code,.forbidden-page h1{font-family:var(--ui-font-family-heading);font-size:var(--ui-text-page-title);font-weight:var(--ui-weight-medium)}
+@media(min-width:768px){#app-shell .app-frame .page-content:not(.page-map):not(:has(.incidents-page)):not(:has(.coverage-page)){padding-inline:var(--ui-page-inline-padding)}}
+@media(max-width:767px){#app-shell .app-frame .page-content:not(.page-map){padding:19px 15px 30px!important;min-width:0}#app-shell .app-frame .page-map{padding:10px 12px}#app-shell .app-frame .phase3-heading,#app-shell .app-frame .phase4-heading{gap:12px}}
+@media(min-width:1024px) and (max-height:700px){
+	#app-shell .app-frame .page-content:has(.incidents-page),#app-shell .app-frame .page-content:has(.coverage-page){padding-block:8px}
+	#app-shell .app-frame .incidents-page>.phase4-heading,#app-shell .app-frame .coverage-page>.phase4-heading{margin-bottom:4px}
+	#app-shell .app-frame .incident-filter-card{padding:8px 10px}
+	#app-shell .app-frame .coverage-toolbar{margin-top:4px;padding:8px;gap:6px}
+	#app-shell .app-frame .coverage-rings-legend{gap:7px}
+	#app-shell .app-frame .coverage-rings-legend label{min-height:30px}
+	#app-shell .app-frame .incidents-layout,#app-shell .app-frame .coverage-layout{height:auto;min-height:0;flex:1 1 auto;margin:4px 0 8px}
+	#app-shell .app-frame .incident-map-card,#app-shell .app-frame .incidents-table-card,#app-shell .app-frame .coverage-map-card,#app-shell .app-frame .coverage-side-column{height:100%;min-height:0}
+	#app-shell .app-frame .coverage-side-column{min-height:0}
+	#app-shell .app-frame .underserved-card{min-height:0;overflow:hidden;display:flex;flex-direction:column}
+	#app-shell .app-frame .underserved-list{min-height:0;flex:1;overflow:auto}
+}
+#app-shell .app-frame .coverage-rings-legend label{min-height:var(--ui-tap-target)}
+#app-shell .app-frame .coverage-trend{color:var(--ui-color-text-primary)}
+
+#app-shell .app-frame .slider-field input[type=range],
+#app-shell .app-frame .timeline-range input[type=range]{
+	height:18px;
+	appearance:none;
+	border:0;
+	background:transparent;
+	box-shadow:none;
+}
+#app-shell .app-frame .slider-field input[type=range]::-webkit-slider-runnable-track,
+#app-shell .app-frame .timeline-range input[type=range]::-webkit-slider-runnable-track{
+	height:10px;
+	border:0;
+	border-radius:99px;
+	background:linear-gradient(to right,var(--color-brand-accent) 0 var(--range-progress,var(--timeline-progress,0%)),var(--color-border) var(--range-progress,var(--timeline-progress,0%)) 100%);
+}
+#app-shell .app-frame .slider-field input[type=range]::-webkit-slider-thumb,
+#app-shell .app-frame .timeline-range input[type=range]::-webkit-slider-thumb{
+	width:18px;
+	height:18px;
+	box-sizing:border-box;
+	margin-top:-4px;
+	appearance:none;
+	border:2px solid #fff;
+	border-radius:50%;
+	background:var(--color-brand-accent);
+	box-shadow:0 1px 5px color-mix(in srgb,var(--color-brand-primary) 26%,transparent);
+}
+#app-shell .app-frame .slider-field input[type=range]::-moz-range-track,
+#app-shell .app-frame .timeline-range input[type=range]::-moz-range-track{
+	height:10px;
+	border:0;
+	border-radius:99px;
+	background:linear-gradient(to right,var(--color-brand-accent) 0 var(--range-progress,var(--timeline-progress,0%)),var(--color-border) var(--range-progress,var(--timeline-progress,0%)) 100%);
+}
+#app-shell .app-frame .slider-field input[type=range]::-moz-range-thumb,
+#app-shell .app-frame .timeline-range input[type=range]::-moz-range-thumb{
+	width:18px;
+	height:18px;
+	box-sizing:border-box;
+	border:2px solid #fff;
+	border-radius:50%;
+	background:var(--color-brand-accent);
+	box-shadow:0 1px 5px color-mix(in srgb,var(--color-brand-primary) 26%,transparent);
+}
+
+#app-shell .app-frame .risk-map-layout .risk-map-mode-control,
+#app-shell .app-frame .coverage-toolbar .coverage-mode{
+	padding:0;
+	border:0;
+	border-radius:0;
+	background:transparent;
+	box-shadow:none;
+	backdrop-filter:none;
+}
+#app-shell .app-frame .risk-map-layout .risk-map-mode-control button:not(.active),
+#app-shell .app-frame .coverage-toolbar .coverage-mode button:not(.active){
+	background:transparent;
+}
+#app-shell .app-frame .risk-map-layout .risk-map-mode-control button:not(.active):hover,
+#app-shell .app-frame .coverage-toolbar .coverage-mode button:not(.active):hover{
+	color:var(--color-text-primary);
+}
+
+#app-shell .app-frame .card.coverage-toolbar,
+#app-shell .app-frame .card.incident-filter-card{
+	padding:0;
+	border:0;
+	border-radius:0;
+	background:transparent;
+	box-shadow:none;
+	outline:0;
+}
+
+.leaflet-bar.leaflet-control-zoom,
+.leaflet-touch .leaflet-bar.leaflet-control-zoom{
+	display:flex;
+	flex-direction:column;
+	gap:8px;
+	overflow:visible;
+	padding:4px;
+	margin:0;
+	border:0;
+	border-radius:0;
+	background:transparent;
+	box-shadow:none;
+}
+.leaflet-control-zoom a,
+.leaflet-bar.leaflet-control-zoom a,
+.leaflet-bar.leaflet-control-zoom a:first-child,
+.leaflet-bar.leaflet-control-zoom a:last-child,
+.leaflet-touch .leaflet-control-zoom a,
+.leaflet-touch .leaflet-control-zoom a:first-child,
+.leaflet-touch .leaflet-control-zoom a:last-child,
+.leaflet-touch .leaflet-bar.leaflet-control-zoom a:first-child,
+.leaflet-touch .leaflet-bar.leaflet-control-zoom a:last-child{
+	width:30px;
+	height:30px;
+	min-width:30px;
+	min-height:30px;
+	box-sizing:border-box;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	padding:0;
+	margin:0;
+	border:1px solid var(--color-border);
+	border-radius:50%;
+	background:#fff;
+	box-shadow:0 3px 8px rgba(34,9,1,.12);
+	font-family:'Lucida Console',Monaco,monospace;
+	font-size:16px;
+	font-weight:500;
+	line-height:1;
+	text-indent:0;
+}
+.leaflet-touch .leaflet-bar.leaflet-control-zoom a,
+.leaflet-touch .leaflet-bar.leaflet-control-zoom a:first-child,
+.leaflet-touch .leaflet-bar.leaflet-control-zoom a:last-child{
+	border-radius:50% !important;
+}
+.leaflet-control-zoom a + a,
+.leaflet-touch .leaflet-control-zoom a + a{
+	margin-top:0;
+	border-top:0;
+}
+.modal-panel .leaflet-bar.leaflet-control-zoom{
+	gap:6px;
+	padding:8px;
+}
+.modal-panel .leaflet-control-zoom a,
+.modal-panel .leaflet-bar.leaflet-control-zoom a,
+.modal-panel .leaflet-bar.leaflet-control-zoom a:first-child,
+.modal-panel .leaflet-bar.leaflet-control-zoom a:last-child,
+.modal-panel .leaflet-touch .leaflet-control-zoom a,
+.modal-panel .leaflet-touch .leaflet-control-zoom a:first-child,
+.modal-panel .leaflet-touch .leaflet-control-zoom a:last-child,
+.modal-panel .leaflet-touch .leaflet-bar.leaflet-control-zoom a:first-child,
+.modal-panel .leaflet-touch .leaflet-bar.leaflet-control-zoom a:last-child{
+	width:26px;
+	height:26px;
+	min-width:26px;
+	min-height:26px;
+	font-size:14px;
+	border-radius:50% !important;
+}
+.modal-panel .leaflet-control-zoom a + a,
+.modal-panel .leaflet-touch .leaflet-control-zoom a + a{
+	margin-top:0;
+	border-top:0;
+}
+.leaflet-control-zoom a::before,
+.leaflet-control-zoom a::after{
+	content:none;
+}
+.leaflet-control-zoom a:hover,
+.leaflet-control-zoom a:focus{
+	background:var(--color-bg-tint);
+}
+
+.login-page .login-message h1{
+	font-size:36px;
+	line-height:1.15;
+}
+.login-page .login-message h1 em{
+	display:inline-block;
+	margin-top:8px;
+	font-size:36px;
+	line-height:1.15;
+}
+.login-page .login-message p{
+	margin-top:16px;
+	font-size:16px;
+	line-height:1.5;
+}
+.login-page .login-message p > span{
+	font-size:inherit;
+	line-height:inherit;
+	font-weight:inherit;
+	letter-spacing:inherit;
+}
+.login-page .login-form h2{
+	font-size:22px;
+	line-height:1.25;
+	margin-bottom:8px;
+}
+@media(max-width:768px){
+	.login-page .login-message h1,
+	.login-page .login-message h1 em{font-size:28px}
+	.login-page .login-message .login-desktop-break{display:none}
+}
+@media(max-width:480px){
+	.login-page .login-form h2{font-size:20px}
+}
+
+#app-shell .app-frame .dashboard-weather .weather-metrics>.weather-stat,
+#app-shell .app-frame .weather-hero-stats>.weather-stat{
+	width:100%;
+	height:100%;
+	min-height:40px;
+	box-sizing:border-box;
+	grid-template-rows:auto auto;
+	align-content:center;
+	justify-content:center;
+	column-gap:6px;
+}
+#app-shell .app-frame .dashboard-weather .weather-metrics>.weather-stat{
+	grid-template-columns:20px auto;
+}
+#app-shell .app-frame .weather-hero-stats>.weather-stat{
+	grid-template-columns:24px auto;
+}
+#app-shell .app-frame .dashboard-weather .weather-metrics .weather-stat-icon,
+#app-shell .app-frame .weather-hero-stats .weather-stat-icon{
+	grid-row:span 2;
+}
+#app-shell .app-frame .dashboard-weather .weather-metrics .weather-stat>strong,
+#app-shell .app-frame .dashboard-weather .weather-metrics .weather-stat>small,
+#app-shell .app-frame .weather-hero-stats .weather-stat>strong,
+#app-shell .app-frame .weather-hero-stats .weather-stat>small{
+	text-align:center;
+}

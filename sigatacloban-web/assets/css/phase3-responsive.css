@@ -1,0 +1,13 @@
+.phase3-page .chart-card{min-width:0;overflow:hidden}
+.weather-chart-wrap,.trend-line-wrap,
+.phase3-page .chart-card canvas{display:block;max-width:100%!important}
+.weather-hero-stats,.weather-hero-stats>div{min-width:0}
+.phase3-page .chart-card canvas{width:100%!important}
+@media(max-width:1000px){.phase3-page .weather-analysis-grid,.phase3-page .trend-charts-grid{grid-template-columns:minmax(0,1fr)!important}}
+@media(max-width:480px){
+  .phase3-page .weather-hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:5px}
+  .weather-hero-stats>div{grid-template-columns:14px minmax(0,1fr);column-gap:2px}
+  .weather-hero-stats b{font-size:7px;white-space:nowrap}
+  .weather-hero-stats small{font-size:5px;white-space:nowrap}
+  .weather-hero-stats>div:last-child b{white-space:normal;overflow-wrap:anywhere}
+}

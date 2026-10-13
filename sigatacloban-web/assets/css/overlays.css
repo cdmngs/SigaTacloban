@@ -1,0 +1,151 @@
+:root {
+  --z-map: 0;
+  --z-topbar: 30;
+  --z-navigation: 40;
+  --z-map-floating: 500;
+  --z-overlay-panel: 1100;
+  --z-modal: 1200;
+  --z-toast: 1300;
+  --z-content: 1;
+  --z-illustration: 2;
+}
+
+.sidebar { z-index: var(--z-navigation) !important; }
+.topbar { z-index: var(--z-topbar) !important; }
+.topbar:has(.profile-menu:not([hidden])) { z-index: var(--z-overlay-panel) !important; }
+.bottom-nav { z-index: var(--z-navigation) !important; }
+.map-isolation-wrapper { position: relative; z-index: var(--z-map); isolation: isolate; width: 100%; height: 100%; }
+.sigatacloban-map { position: relative; z-index: var(--z-map); isolation: isolate; width: 100%; height: 100%; }
+.modal-backdrop { z-index: var(--z-modal) !important; position: fixed; inset: 0; }
+.modal-backdrop:has(.drawer-panel),
+.modal-backdrop:has(.bottom-sheet-panel) { z-index: var(--z-overlay-panel) !important; }
+.toast-stack { z-index: var(--z-toast) !important; }
+.alerts-popover,
+.profile-menu,
+.user-row-menu > div,
+.past-report-menu > div,
+.map-layer-panel,
+.map-search-area,
+.map-search-results,
+.prediction-timeline,
+.map-empty-banner,
+.map-zoom-controls,
+.risk-map-attribution,
+.map-loading-veil,
+.coverage-map-controls,
+.coverage-rings-legend { z-index: var(--z-map-floating) !important; }
+.area-detail-panel { z-index: var(--z-overlay-panel) !important; }
+
+@media (min-width: 768px) {
+  .table-wrap { display: block !important; }
+  .mobile-table { display: none !important; }
+  .users-table-card:has(.user-table-scroll) { display: block !important; }
+  .users-table-card .user-table-scroll { display: block !important; }
+  .users-table-card .user-table { display: table !important; }
+  .users-table-card .user-mobile-list { display: none !important; }
+  .incidents-table-card .incident-table-scroll { display: block !important; }
+  .incidents-table-card .incident-mobile-list { display: none !important; }
+}
+
+@media (max-width: 767px) {
+  .table-wrap { display: none !important; }
+  .mobile-table { display: flex !important; flex-direction: column; gap: 7px; }
+  .users-table-card:has(.user-table-scroll) { display: block !important; }
+  .users-table-card .user-table-scroll,
+  .users-table-card .user-table { display: none !important; }
+  .users-table-card .user-mobile-list { display: flex !important; }
+  .incidents-table-card .incident-table-scroll { display: none !important; }
+  .incidents-table-card .incident-mobile-list { display: flex !important; }
+}
+
+body.modal-open { overflow: hidden; }
+.modal-backdrop{position:fixed!important;inset:0!important;display:grid;place-items:center;padding:20px;background:rgba(18,12,10,.48);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal-backdrop.overlay-backdrop-drawer,.modal-backdrop.overlay-backdrop-sheet{z-index:var(--z-overlay-panel)!important}
+.modal-panel{position:relative;width:min(100%,520px);max-height:min(90dvh,780px);overflow:auto;border:1px solid var(--color-border);border-radius:14px;background:#fff;box-shadow:0 20px 60px rgba(34,9,1,.22);color:var(--color-text-primary)}
+.modal-panel>header{min-height:54px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--color-bg-tint)}
+.modal-panel>header h2{font-family:'Poppins',sans-serif;font-size:15px;font-weight:500}
+.modal-panel>header .icon-button{width:30px;height:30px}
+.dialog-copy{padding:16px;color:var(--color-text-secondary);font-size:11px;line-height:1.55}
+.dialog-actions{padding:0 16px 16px;display:flex;justify-content:flex-end;gap:8px}
+.drawer-panel{width:min(460px,100%);height:100%;max-height:none;margin-left:auto;border-radius:12px 0 0 12px}
+.modal-backdrop:has(.drawer-panel){place-items:stretch end;padding:0}
+.bottom-sheet-panel{width:min(640px,100%);max-height:min(85dvh,780px);align-self:end;border-radius:14px 14px 0 0}
+.modal-backdrop:has(.bottom-sheet-panel){place-items:end center;padding:0}
+.toast-stack{position:fixed;z-index:var(--z-toast);right:18px;bottom:18px;width:min(360px,calc(100vw - 24px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{min-height:46px;padding:10px 12px;display:flex;align-items:center;gap:10px;border:1px solid var(--color-border);border-radius:9px;background:#fff;box-shadow:0 8px 28px rgba(34,9,1,.14);color:var(--color-text-primary);font-size:10px;pointer-events:auto}
+.toast>span{flex:1}
+.toast-action,.toast-dismiss{padding:4px 7px;border:0;border-radius:5px;background:var(--color-bg-tint);color:var(--color-brand-primary);font-size:9px;font-weight:600;cursor:pointer}
+.toast-dismiss{width:24px;height:24px;padding:0;background:transparent;font-size:17px}
+.toast-error{border-left:3px solid var(--color-status-danger)}
+.toast-success{border-left:3px solid var(--color-status-success)}
+.toast-info{border-left:3px solid var(--color-status-info)}
+.toast-warning{border-left:3px solid var(--color-status-warning)}
+@media(max-width:767px){
+  .modal-backdrop{padding:12px}
+  .modal-panel{max-height:calc(100dvh - 24px)}
+  .bottom-sheet-panel{width:100%;max-height:85dvh}
+  .toast-stack{right:12px;bottom:82px;width:calc(100vw - 24px)}
+}
+.modal-panel.incident-form-modal,.modal-panel.coverage-plan-modal{width:min(720px,92vw);max-height:90dvh;padding:0;display:flex;flex-direction:column;overflow:hidden;animation:none}
+.modal-panel.incident-form-modal>header,.modal-panel.coverage-plan-modal>header{min-height:78px;flex:none;margin:0;padding:12px 20px;border-bottom:1px solid var(--color-border)}
+.modal-panel.incident-form-modal .modal-heading-copy,.modal-panel.coverage-plan-modal .modal-heading-copy{min-width:0}
+.modal-panel.incident-form-modal>header h2,.modal-panel.coverage-plan-modal>header h2{margin:0;font-size:17px}
+.modal-panel.incident-form-modal .modal-heading-copy p,.modal-panel.coverage-plan-modal .modal-heading-copy p{margin-top:3px;color:var(--color-text-muted);font-size:12px}
+.modal-panel.incident-form-modal>header .icon-button,.modal-panel.coverage-plan-modal>header .icon-button{width:40px;height:40px;min-width:40px;min-height:40px}
+.modal-panel.incident-form-modal>header .icon-button svg,.modal-panel.coverage-plan-modal>header .icon-button svg{width:18px;height:18px}
+.modal-panel.incident-form-modal>.dialog-copy,.modal-panel.coverage-plan-modal>.dialog-copy{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:18px 20px;scrollbar-width:thin;scrollbar-color:var(--color-border) transparent}
+.modal-fixed-footer{min-height:68px;flex:none;margin:0;padding:12px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;border-top:1px solid var(--color-border);background:#fff}
+.modal-fixed-footer .button{min-height:42px;padding-inline:18px}
+.modal-panel.incident-form-modal .incident-form-grid{display:flex;flex-direction:column;gap:20px}
+.incident-form-section{display:flex;flex-direction:column;gap:12px}
+.incident-form-section>h3{margin:0;color:var(--color-text-muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.incident-form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.incident-form-row-three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.incident-field{min-width:0;display:flex;flex-direction:column;gap:6px}
+.incident-field>label{color:var(--color-text-primary);font-size:12px;font-weight:600}
+.required-mark{color:var(--color-status-danger)}
+.modal-panel.incident-form-modal .incident-field input,.modal-panel.incident-form-modal .incident-field select,.modal-panel.incident-form-modal .incident-field textarea{width:100%;min-height:44px;padding:9px 11px;border:1px solid var(--color-border);border-radius:var(--radius-map-control);background:#fff;color:var(--color-text-primary);font:400 13px var(--font-body)}
+.modal-panel.incident-form-modal .incident-field textarea{min-height:78px;resize:vertical}
+.incident-field input[aria-invalid="true"],.incident-field select[aria-invalid="true"],.incident-field textarea[aria-invalid="true"]{border-color:var(--color-status-danger)}
+.incident-field-error{color:var(--color-status-danger);font-size:11px}
+.incident-notes-counter{align-self:flex-end;color:var(--color-text-muted);font-size:11px}
+.modal-panel.incident-form-modal .location-picker{padding:0;border:0;border-radius:0}
+.location-picker-title{color:var(--color-text-primary);font-size:13px}
+.location-picker-help{margin-top:-7px;color:var(--color-text-muted);font-size:12px}
+.modal-panel.incident-form-modal .location-picker-map,.modal-panel.incident-form-modal .location-picker-map .leaflet-container{width:100%;height:280px;min-height:0}
+.modal-panel.incident-form-modal .location-picker-map{margin-top:0;overflow:hidden;border:1px solid var(--color-border);border-radius:var(--radius-map-control);background:#dce4e2}
+.location-picker-meta{min-height:32px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.picked-location{padding:5px 9px;border:1px solid var(--color-border);border-radius:20px;background:var(--color-bg-tint);color:var(--color-text-muted);font-size:11px}
+.reset-location{padding:5px 0;border:0;background:transparent;color:var(--color-brand-accent);font-size:11px;font-weight:600;cursor:pointer}
+.coverage-plan-content{display:flex;flex-direction:column;gap:14px}
+.plan-instruction{display:flex;align-items:flex-start;gap:9px;color:var(--color-text-secondary);font-size:13px;line-height:1.45}
+.plan-instruction svg{width:17px;height:17px;flex:none;color:var(--color-brand-accent)}
+.modal-panel.coverage-plan-modal .plan-map{height:300px;overflow:hidden;border:1px solid var(--color-border);border-radius:var(--radius-map-control);background:#dce4e2}
+.coverage-plan-modal .plan-pick-map,.coverage-plan-modal .plan-pick-map .leaflet-container{width:100%;height:100%}
+.modal-panel.coverage-plan-modal .plan-location{margin:0}
+.plan-location-coordinate{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--color-border);border-radius:20px;background:var(--color-bg-tint);color:var(--color-text-secondary);font-size:12px}
+.coverage-estimate-results{padding:14px;border:1px solid var(--color-border);border-radius:10px;background:#fff}
+.coverage-estimate-results[hidden]{display:none}
+.coverage-estimate-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.coverage-estimate-stats article{padding:12px;border:1px solid var(--color-border);border-radius:8px}
+.coverage-estimate-stats article>span{display:block;color:var(--color-text-muted);font-size:11px}
+.coverage-estimate-stats article>strong{font-size:23px}
+.coverage-estimate-stats article>small{margin-left:3px;color:var(--color-text-muted);font-size:11px}
+.coverage-estimate-stats article>i{height:5px;margin-top:8px;display:block;overflow:hidden;border-radius:5px;background:var(--color-bg-tint)}
+.coverage-estimate-stats article>i>b{height:100%;display:block;border-radius:inherit;background:var(--color-status-success)}
+.coverage-delta{margin-top:11px;padding:5px 9px;display:inline-flex;border-radius:20px;background:var(--color-bg-tint);color:var(--color-text-muted);font-size:12px;font-weight:700}
+.coverage-delta.is-positive{background:#eaf7ee;color:var(--color-status-success)}
+.coverage-no-data-note,.plan-simulation-note{color:var(--color-text-muted);font-size:12px}
+.modal-panel.coverage-plan-modal .coverage-plan-actions .estimate-coverage{min-width:160px}
+.modal-panel.incident-form-modal>.incident-form-actions,.modal-panel.coverage-plan-modal>.coverage-plan-actions{margin:0}
+.modal-panel.incident-form-modal>.incident-form-actions .button,.modal-panel.coverage-plan-modal>.coverage-plan-actions .button{min-height:42px;font-size:13px}
+@media(max-width:767px){
+  .modal-backdrop:has(.incident-form-modal),.modal-backdrop:has(.coverage-plan-modal){padding:0;place-items:stretch}
+  .modal-panel.incident-form-modal,.modal-panel.coverage-plan-modal{width:100vw!important;max-width:none;height:100dvh;max-height:100dvh;border:0;border-radius:0}
+  .modal-panel.incident-form-modal>header,.modal-panel.coverage-plan-modal>header{min-height:76px;padding:12px 16px}
+  .modal-panel.incident-form-modal>.dialog-copy,.modal-panel.coverage-plan-modal>.dialog-copy{padding:16px}
+  .incident-form-row,.incident-form-row-three{grid-template-columns:1fr}
+  .modal-panel.incident-form-modal .location-picker-map,.modal-panel.incident-form-modal .location-picker-map .leaflet-container{height:220px!important;min-height:0!important}
+  .modal-panel.coverage-plan-modal .plan-map{height:240px}
+  .modal-fixed-footer{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+}
