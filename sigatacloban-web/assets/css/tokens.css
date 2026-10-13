@@ -1,0 +1,96 @@
+@font-face{font-family:Inter;src:url("../fonts/inter-latin-400-normal.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:Inter;src:url("../fonts/inter-latin-500-normal.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:Inter;src:url("../fonts/inter-latin-600-normal.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:Inter;src:url("../fonts/inter-latin-700-normal.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:Poppins;src:url("../fonts/poppins-latin-400-normal.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:Poppins;src:url("../fonts/poppins-latin-500-normal.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:Poppins;src:url("../fonts/poppins-latin-600-normal.woff2") format("woff2");font-style:normal;font-weight:600;font-display:swap}
+:root{
+  --color-coffee-bean-100:#070200;--color-coffee-bean-200:#0E0400;--color-coffee-bean-300:#150601;--color-coffee-bean-400:#1C0801;--color-coffee-bean-500:#220901;--color-coffee-bean-600:#7F2304;--color-coffee-bean-700:#DB3C07;--color-coffee-bean-800:#F97447;--color-coffee-bean-900:#FCB9A3;--color-coffee-bean-DEFAULT:#220901;
+  --color-dark-garnet-100:#140502;--color-dark-garnet-200:#280903;--color-dark-garnet-300:#3B0E05;--color-dark-garnet-400:#4F1306;--color-dark-garnet-500:#621708;--color-dark-garnet-600:#AE290E;--color-dark-garnet-700:#ED421F;--color-dark-garnet-800:#F3816A;--color-dark-garnet-900:#F9C0B4;--color-dark-garnet-DEFAULT:#621708;
+  --color-oxblood-100:#1D0602;--color-oxblood-200:#3A0B05;--color-oxblood-300:#581107;--color-oxblood-400:#751609;--color-oxblood-500:#941B0C;--color-oxblood-600:#D32811;--color-oxblood-700:#EF513C;--color-oxblood-800:#F48B7D;--color-oxblood-900:#FAC5BE;--color-oxblood-DEFAULT:#941B0C;
+  --color-rusty-spice-100:#250B02;--color-rusty-spice-200:#4A1603;--color-rusty-spice-300:#702105;--color-rusty-spice-400:#952C06;--color-rusty-spice-500:#BC3908;--color-rusty-spice-600:#F54A0C;--color-rusty-spice-700:#F77749;--color-rusty-spice-800:#FAA586;--color-rusty-spice-900:#FCD2C2;--color-rusty-spice-DEFAULT:#BC3908;
+  --color-orange-100:#352302;--color-orange-200:#6A4604;--color-orange-300:#9F6907;--color-orange-400:#D48D09;--color-orange-500:#F6AA1C;--color-orange-600:#F7BB4B;--color-orange-700:#F9CC78;--color-orange-800:#FBDDA5;--color-orange-900:#FDEED2;--color-orange-DEFAULT:#F6AA1C;
+  --color-brand-primary:#220901;--color-brand-primary-hover:#1C0801;--color-brand-primary-contrast:#4F1306;--color-brand-accent:#BC3908;--color-brand-accent-hover:#952C06;
+  --color-status-danger:#941B0C;--color-status-info:#F6AA1C;--color-status-info-text:#220901;--color-status-success:#1F653D;--color-status-warning:#775A00;--color-status-warning-strong:#9A4A00;
+  --color-bg-canvas:#FBF7F3;--color-bg-tint:#F6EFEA;--color-bg-surface:#FFFFFF;--color-text-primary:#220901;--color-text-secondary:#7F2304;--color-text-muted:#6E5B52;--color-border:#EADFD8;
+  --color-risk-low:#2E9E5B;--color-risk-moderate:#F4C430;--color-risk-high:#F77F00;--color-risk-very-high:#D62828;
+  --color-chart-secondary:#7F2304;--color-chart-grid:#EADFD8;--color-chart-muted:#6E5B52;--card-shadow:0 8px 24px rgba(34,9,1,.08);
+  --z-map:0;--z-topbar:30;--z-navigation:40;--z-sidebar:40;--z-map-floating:500;--z-overlay-panel:1100;--z-modal:1200;--z-toast:1300;--z-content:1;--z-illustration:2;
+  --font-heading:"Poppins",sans-serif;--font-body:"Inter",sans-serif
+}
+
+/* Step 1 audit tokens: reference values only; no existing component consumes these yet. */
+:root{
+  --ui-font-family-body:var(--font-body);
+  --ui-font-family-heading:var(--font-heading);
+  --ui-text-body:11px;
+  --ui-text-caption:11px;
+  --ui-text-eyebrow:11px;
+  --ui-text-card-title:12px;
+  --ui-text-empty-title:14px;
+  --ui-text-empty-detail:11px;
+  --ui-text-page-title:21px;
+  --ui-text-topbar-title:16px;
+  --ui-text-stat-number:17px;
+  --ui-text-chip:11px;
+  --ui-text-button:11px;
+  --ui-text-select:11px;
+  --ui-text-table:11px;
+  --ui-text-table-secondary:11px;
+  --ui-text-form:11px;
+  --ui-text-tab:11px;
+  --ui-text-pagination:11px;
+  --ui-text-avatar:11px;
+  --ui-text-modal-heading:12px;
+  --ui-text-modal-body:11px;
+  --ui-text-toast:11px;
+  --ui-text-sidebar:11px;
+  --ui-text-display:32px;
+  --ui-weight-regular:400;
+  --ui-weight-medium:500;
+  --ui-weight-semibold:600;
+  --ui-weight-bold:700;
+  --ui-icon-small:12px;
+  --ui-icon-medium:14px;
+  --ui-icon-standard:16px;
+  --ui-icon-sidebar:16px;
+  --ui-icon-stat-delta:12px;
+  --ui-icon-export:14px;
+  --ui-icon-empty-state:16px;
+  --ui-icon-stroke:2;
+  --ui-empty-icon-tile:25px;
+  --ui-avatar-size:32px;
+  --ui-slider-thumb-size:16px;
+  --ui-tap-target:36px;
+  --ui-control-height:36px;
+  --ui-control-height-measured:32px;
+  --ui-control-compact-height:36px;
+  --ui-control-radius:8px;
+  --ui-card-radius:16px;
+  --ui-chip-radius:30px;
+  --ui-card-padding:14px;
+  --ui-kpi-padding:12px 14px;
+  --ui-kpi-padding-block:12px;
+  --ui-kpi-padding-inline:14px;
+  --ui-gap-inline:12px;
+  --ui-card-gap:12px;
+  --ui-gap-kpi:5px;
+  --ui-page-header-card-gap:15px;
+  --ui-header-card-gap:15px;
+  --ui-page-max-width:1400px;
+  --ui-page-inline-padding:26px;
+  --ui-page-content-padding:25px 26px 34px;
+  --ui-sidebar-item-height:32px;
+  --ui-card-shadow:0 8px 24px rgba(34,9,1,.08);
+  --ui-color-text-primary:#220901;
+  --ui-color-text-muted:#6E5B52;
+  --ui-color-border-contrast:#8A6E60;
+  --ui-color-surface:#FFFFFF;
+  --ui-color-canvas:#FBF7F3;
+  --ui-color-dark-panel-text:#E8D5CC;
+  --ui-risk-low:#2E9E5B;
+  --ui-risk-moderate:#F4C430;
+  --ui-risk-high:#F77F00;
+  --ui-risk-very-high:#D62828;
+}

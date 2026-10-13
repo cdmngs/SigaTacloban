@@ -1,0 +1,219 @@
+.page-content.page-map{height:calc(100vh - 64px);min-height:0;padding:0;overflow:hidden}.notifications-wrap{position:relative}.alerts-popover{width:330px;max-height:min(460px,calc(100vh - 90px));position:absolute;z-index:var(--z-map-floating);top:43px;right:-45px;overflow:auto;border:1px solid var(--color-border);border-radius:11px;background:#fff;box-shadow:0 14px 36px color-mix(in srgb, var(--color-brand-primary) 20%, transparent)}.alerts-popover>header{min-height:52px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--color-bg-tint)}.alerts-popover>header>div{display:flex;flex-direction:column;gap:3px}.alerts-popover>header b{color:var(--color-text-primary);font-size:11px}.alerts-popover>header small{color:var(--color-text-muted);font-size:8px}.alerts-popover>header>a{color:var(--color-brand-accent);font-size:9px;font-weight:600}.alerts-popover-list>button{width:100%;min-height:63px;padding:9px 11px;display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:start;gap:7px;border:0;border-bottom:1px solid var(--color-bg-tint);background:#fff;text-align:left;cursor:pointer}.alerts-popover-list>button:hover,.alerts-popover-list>button.unread{background:var(--color-bg-tint)}.alert-dot{width:7px;height:7px;margin-top:4px;border-radius:50%;background:var(--color-text-muted)}.alert-dot.risk-veryhigh{background:var(--color-risk-very-high)}.alert-dot.risk-high{background:#f77f00}.alert-dot.risk-moderate{background:var(--color-brand-accent)}.alert-dot.risk-low{background:#2e9e5b}.alerts-popover-list>button>span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:4px}.alerts-popover-list>button b{overflow:hidden;color:var(--color-text-primary);font-size:9px;text-overflow:ellipsis;white-space:nowrap}.alerts-popover-list>button small{color:var(--color-text-muted);font-size:8px;line-height:1.35}.alerts-popover-list>button time{padding-top:2px;color:var(--color-text-muted);font-size:7px;white-space:nowrap}.alert-skeletons{padding:10px;display:flex;flex-direction:column;gap:8px}.alert-skeletons .skeleton{height:42px}.alerts-popover .query-error{min-height:160px}.alerts-popover .query-error p{max-width:220px}@media(max-width:767px){.page-content.page-map{height:calc(100dvh - 118px)}.alerts-popover{right:-42px;width:min(330px,calc(100vw - 20px))}}
+:root{
+  --radius-map-control:6px;
+  --content-max-width:1400px;
+  --page-inline-padding:20px;
+  --map-page-block-padding:12px;
+  --operational-map-columns:minmax(0,1fr) 340px;
+  --operational-map-height:calc(100dvh - 226px);
+  --operational-map-tablet-height:max(600px,calc(100dvh - 170px));
+  --operational-map-mobile-height:clamp(320px,65dvh,620px);
+  --operational-card-radius:16px;
+  --page-layout-gap:12px;
+}
+
+.page-content>.dashboard-content,.page-content>.phase3-page,.page-content>.phase4-page{
+  width:100%;
+  max-width:var(--content-max-width);
+}
+
+.topbar-page-label{font-weight:600}
+
+.map-search-box,
+.coverage-search,
+.coverage-rings-legend,
+.coverage-mode,
+.map-mode-switch,
+.map-mode-control{
+  border-radius:var(--radius-map-control);
+}
+
+.page-content.page-map{
+  height:calc(100dvh - 64px);
+  min-height:0;
+  padding:var(--map-page-block-padding) var(--page-inline-padding);
+  overflow:hidden;
+}
+
+.page-content.page-map .risk-map-screen{
+  height:100%;
+  width:100%;
+  max-width:var(--content-max-width);
+  margin:0 auto;
+  min-height:0;
+  background:transparent;
+}
+
+.page-content.page-map .risk-map-layout{gap:var(--page-layout-gap)}
+.page-content.page-map .risk-map-layout .risk-map-stage,
+.page-content.page-map .risk-map-layout .map-side-panel{
+  border:1px solid var(--color-border);
+  border-radius:var(--operational-card-radius);
+  box-shadow:var(--card-shadow);
+}
+.page-content.page-map .risk-map-layout .risk-map-stage{overflow:hidden}
+.page-content.page-map .risk-map-layout .map-side-panel{
+  border-left:1px solid var(--color-border);
+  background:#fff;
+}
+.page-content.page-map .risk-map-layout .risk-map-mode-control{
+  height:36px;
+  margin:10px 0 14px;
+  border-radius:var(--radius-map-control);
+  background:var(--color-bg-tint);
+  box-shadow:none;
+}
+.page-content.page-map .risk-map-layout .map-search-box,
+.page-content.page-map .risk-map-layout .map-mode-control{
+  border-radius:var(--radius-map-control);
+}
+.page-content.page-map .risk-map-layout .risk-map-mode-control button{height:auto}
+.page-content.page-map .risk-map-screen:has(.area-detail-panel) .prediction-timeline{
+  left:50%;
+  width:min(350px,calc(100% - 32px));
+}
+
+@media(min-width:1024px){
+  .page-content:has(.coverage-page),.page-content:has(.incidents-page){
+    height:calc(100dvh - 64px);
+    min-height:0;
+    overflow:hidden;
+    padding:var(--map-page-block-padding) var(--page-inline-padding);
+  }
+  .page-content:has(.coverage-page) .coverage-page{
+    height:100%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .page-content:has(.coverage-page) .coverage-page>.phase4-heading{
+    min-height:50px;
+    flex:0 0 50px;
+    margin-bottom:9px;
+  }
+  .page-content:has(.coverage-page) .coverage-layout{
+    height:auto;
+    min-height:0;
+    flex:1 1 auto;
+    margin:10px 0 8px;
+    grid-template-columns:var(--operational-map-columns);
+    gap:var(--page-layout-gap);
+  }
+  .page-content:has(.coverage-page) .coverage-map-card,
+  .page-content:has(.coverage-page) .coverage-side-column{
+    height:100%;
+    min-height:0;
+  }
+  .page-content:has(.coverage-page) .coverage-map-card{
+    border-radius:var(--operational-card-radius);
+  }
+  .page-content:has(.coverage-page) .coverage-side-column{overflow:hidden}
+  .page-content:has(.coverage-page) .underserved-card{
+    min-height:0;
+    overflow:hidden;
+  }
+  .page-content:has(.coverage-page) .underserved-list{
+    min-height:0;
+    overflow:hidden;
+  }
+  .page-content:has(.coverage-page) .coverage-map-controls .coverage-mode{
+    width:min(270px,100%);
+    align-self:center;
+    height:36px;
+    border-radius:var(--radius-map-control);
+    background:rgba(255,255,255,.9);
+  }
+  .page-content:has(.coverage-page) .coverage-map-controls .coverage-mode button{
+    height:auto;
+    gap:5px;
+    padding:0 4px;
+    border-radius:var(--radius-map-control);
+  }
+  .page-content:has(.incidents-page) .incidents-page{
+    height:100%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  @media(min-width:768px){
+    .page-content.page-map .risk-map-layout .risk-map-mode-control{width:100%}
+    .page-content:has(.coverage-page) .coverage-map-controls .coverage-mode{
+      width:min(270px,100%);
+      height:36px;
+      align-self:center;
+    }
+    .page-content:has(.coverage-page) .coverage-map-controls .coverage-mode button{
+      height:auto;
+      gap:5px;
+      padding:0 4px;
+      border-radius:var(--radius-map-control);
+    }
+  }
+  .page-content:has(.incidents-page) .incidents-page>.phase4-heading{
+    min-height:50px;
+    margin-bottom:9px;
+  }
+  .page-content:has(.incidents-page) .incidents-layout{
+    height:auto;
+    min-height:0;
+    flex:1 1 auto;
+    margin:10px 0 8px;
+    grid-template-columns:var(--operational-map-columns);
+    gap:var(--page-layout-gap);
+  }
+  .page-content:has(.incidents-page) .incident-map-card,
+  .page-content:has(.incidents-page) .incidents-table-card{
+    height:100%;
+    min-height:0;
+    border-radius:var(--operational-card-radius);
+  }
+  .page-content:has(.incidents-page) .incident-map-card{
+    border:1px solid var(--color-border);
+    box-shadow:var(--card-shadow);
+  }
+}
+
+@media(max-width:1023px){
+  .page-content:has(.coverage-page),.page-content:has(.incidents-page){
+    height:auto;
+    min-height:calc(100dvh - 64px);
+    overflow:visible;
+  }
+  .page-content:has(.coverage-page) .coverage-map-card,
+  .page-content:has(.incidents-page) .incident-map-card{
+    border:1px solid var(--color-border);
+    border-radius:var(--operational-card-radius);
+    box-shadow:var(--card-shadow);
+  }
+}
+
+@media(min-width:768px) and (max-width:1023px){
+  .page-content:has(.coverage-page) .coverage-map-card,
+  .page-content:has(.incidents-page) .incident-map-card{
+    height:60dvh;
+    min-height:0;
+  }
+  .page-content:has(.coverage-page) .coverage-layout{height:auto;margin-top:10px}
+}
+
+@media(max-width:767px){
+  .page-content.page-map{
+    height:calc(100dvh - 118px);
+    padding:10px 12px;
+  }
+  .page-content.page-map .risk-map-layout .risk-map-mode-control{
+    width:min(270px,100%);
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .page-content:has(.coverage-page) .coverage-layout{height:auto;margin-top:10px}
+  .page-content:has(.coverage-page) .coverage-map-card,
+  .page-content:has(.incidents-page) .incident-map-card{
+    height:60dvh;
+    min-height:320px;
+    max-height:none;
+  }
+}

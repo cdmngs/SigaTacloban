@@ -1,0 +1,6 @@
+.dashboard-content{width:100%;max-width:var(--content-max-width)}
+.mini-map-frame{height:400px}
+.weather-metrics{grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;column-gap:0}
+.weather-metrics>.weather-stat{width:100%}
+@media(max-width:767px){.mini-map-frame{height:320px}}
+@media(max-width:480px){.dashboard-kpis,.dashboard-skeleton .skeleton-kpis{grid-template-columns:1fr}}
