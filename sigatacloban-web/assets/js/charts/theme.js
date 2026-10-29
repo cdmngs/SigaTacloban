@@ -1,3 +1,5 @@
+import { formatValue } from "../utils/format.js";
+
 const colors = Object.freeze({
   brandAccent: "#BC3908", brandPrimary: "#220901", info: "#7F2304", danger: "#941B0C",
   success: "#1F653D", riskLow: "#2E9E5B", riskModerate: "#F4C430",
@@ -29,7 +31,7 @@ export const chartBaseOptions = Object.freeze({
 
 export function describeChart(canvas, label, summary) {
   canvas.setAttribute("role", "img");
-  canvas.setAttribute("aria-label", label);
+  canvas.setAttribute("aria-label", formatValue(label, "Chart"));
   const chartCard = canvas.closest(".chart-card");
   let summaryElement = chartCard?.querySelector(".chart-data-summary");
   if (!summaryElement) {
@@ -38,7 +40,7 @@ export function describeChart(canvas, label, summary) {
     canvas.parentElement?.append(summaryElement);
   }
   if (!summaryElement.id) summaryElement.id = `chart-data-summary-${++nextSummaryId}`;
-  summaryElement.textContent = summary || "No chart data available.";
+  summaryElement.textContent = formatValue(summary, "No chart data available.");
   canvas.setAttribute("aria-describedby", summaryElement.id);
 }
 
@@ -109,7 +111,8 @@ export function createChartCard(container, { title, eyebrow = "", summary = "", 
     copy.append(label);
   }
   const titleElement = document.createElement("h2");
-  titleElement.textContent = title;
+  const formattedTitle = formatValue(title);
+  titleElement.textContent = formattedTitle;
   copy.append(titleElement);
   heading.append(copy);
   const plot = document.createElement("div");
@@ -117,27 +120,75 @@ export function createChartCard(container, { title, eyebrow = "", summary = "", 
   const canvas = document.createElement("canvas");
   const empty = document.createElement("p");
   empty.className = "chart-empty-note";
-  empty.textContent = note;
+  empty.textContent = formatValue(note);
   plot.append(canvas, empty);
   const summaryElement = document.createElement("p");
   summaryElement.className = "visually-hidden";
   summaryElement.setAttribute("aria-label", "Chart data summary");
-  summaryElement.textContent = summary;
+  summaryElement.textContent = formatValue(summary);
   summaryElement.classList.add("chart-data-summary");
   card.append(heading, plot, summaryElement);
   container.append(card);
-  describeChart(canvas, title, summary);
+  describeChart(canvas, formattedTitle, summary);
   return {
     card, canvas, emptyNote: empty, summary: summaryElement,
-    setHasData(hasData) { empty.hidden = Boolean(hasData); },
+    setHasData(hasData) {
+      empty.hidden = Boolean(hasData);
+      empty.style.display = hasData ? "none" : "grid";
+    },
   };
 }
 
-export function renderEmptyChart(canvas, { type = "line", options = {} } = {}) {
+function hasChartPoints(data) {
+  return Array.isArray(data?.datasets) && data.datasets.some((dataset) =>
+    Array.isArray(dataset.data) && dataset.data.some((value) => value !== null && value !== undefined && Number.isFinite(Number(value))),
+  );
+}
+
+function chartEmptyNote(canvas, message) {
+  let note = canvas.closest(".chart-card-plot")?.querySelector(".chart-empty-note");
+  if (!note) {
+    note = document.createElement("p");
+    note.className = "chart-empty-note";
+    canvas.parentElement?.append(note);
+    if (canvas.parentElement && getComputedStyle(canvas.parentElement).position === "static") canvas.parentElement.style.position = "relative";
+  }
+  note.textContent = formatValue(message);
+  note.hidden = false;
+  note.style.display = "grid";
+  return note;
+}
+
+export function renderChart(canvas, configuration, { emptyMessage = "No data yet" } = {}) {
   destroyChartsOnPageHide();
   const Chart = window.Chart;
   if (!Chart) throw new Error("Chart.js is not loaded. Load assets/vendor/chart.umd.js first.");
-  describeChart(canvas, canvas.getAttribute("aria-label") || "Chart", "No chart data available.");
+  if (!configuration || typeof configuration !== "object") throw new TypeError("A Chart.js configuration is required.");
+  const previous = Chart.getChart?.(canvas);
+  previous?.destroy();
+  const hasData = hasChartPoints(configuration.data);
+  const note = chartEmptyNote(canvas, emptyMessage);
+  if (!hasData) {
+    describeChart(canvas, canvas.getAttribute("aria-label") || "Chart", emptyMessage);
+    return null;
+  }
+  if (note) {
+    note.hidden = true;
+    note.style.display = "none";
+  }
+  const instance = new Chart(canvas, configuration);
+  const pointCount = configuration.data.labels?.length || 0;
+  describeChart(canvas, canvas.getAttribute("aria-label") || "Chart", `${formatValue(pointCount)} data points.`);
+  return instance;
+}
+
+export function renderEmptyChart(canvas, { type = "line", options = {}, emptyMessage = "No data yet" } = {}) {
+  destroyChartsOnPageHide();
+  const Chart = window.Chart;
+  if (!Chart) throw new Error("Chart.js is not loaded. Load assets/vendor/chart.umd.js first.");
+  Chart.getChart?.(canvas)?.destroy();
+  chartEmptyNote(canvas, emptyMessage);
+  describeChart(canvas, canvas.getAttribute("aria-label") || "Chart", emptyMessage);
   const normalizedType = ["line", "bar"].includes(type) ? type : "line";
   return new Chart(canvas, {
     type: normalizedType,

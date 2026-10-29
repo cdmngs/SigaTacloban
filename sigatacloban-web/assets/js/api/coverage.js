@@ -1,13 +1,31 @@
-import { USE_MOCKS } from "./config.js";
-import { requestJson } from "./client.js";
-import { mockDelay } from "./mockDelay.js";
+import { api, unwrapResponse } from "./client.js";
 
-const EMPTY_COVERAGE = Object.freeze({ score: 0, changePercent: 0, stations: [], underserved: [] });
-export async function getCoverage() {
-  if (USE_MOCKS) { await mockDelay(); return { ...EMPTY_COVERAGE, stations: [], underserved: [] }; }
-  return requestJson("/coverage");
+function uiCoverage(coverage) {
+  if (!coverage) return coverage;
+  return {
+    ...coverage,
+    underserved: (coverage.underserved || []).map((item) => ({
+      ...item,
+      area: item.area ? {
+        ...item.area,
+        level: String(item.area.level || item.area.riskLevel || "Low").toLowerCase().replace(/\s+/g, ""),
+      } : item.area,
+    })),
+  };
 }
-export async function planCoverageStation(lat, lng) {
-  if (USE_MOCKS) { await mockDelay(); return { id: `plan-${Date.now()}`, lat, lng, beforeScore: 0, afterScore: 0 }; }
-  return requestJson("/coverage/stations/plan", { method: "POST", body: JSON.stringify({ lat, lng }) });
+
+export async function getCoverage(options = {}) {
+  return uiCoverage(unwrapResponse(await api.get("/coverage", { ...options, mockSample: "coverage-summary" })));
+}
+
+export async function getCoverageRings(minutes = [5, 10, 15], options = {}) {
+  return unwrapResponse(await api.get("/coverage/rings", {
+    ...options,
+    query: { minutes: minutes.join(",") },
+    mockSample: "coverage-rings",
+  }));
+}
+
+export async function planCoverageStation(lat, lng, options = {}) {
+  return unwrapResponse(await api.post("/coverage/stations/plan", { lat, lng }, { ...options, mockSample: "coverage-plan" }));
 }

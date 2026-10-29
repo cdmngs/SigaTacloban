@@ -1,4 +1,5 @@
-import { fetchRiskForDay } from "../api/risk.js";
+import { fetchRiskAreas, fetchRiskForDay, fetchRiskHotspots, fetchRiskArea } from "../api/risk.js";
+import { getBarangayBoundaries } from "../api/barangays.js";
 import { fetchIncidents } from "../api/incidents.js";
 import { fetchStations } from "../api/stations.js";
 import { fetchWeather } from "../api/weather.js";
@@ -12,11 +13,15 @@ import { renderRiskDna } from "../ui/risk-dna-bars.js";
 import { createEmptyState } from "../ui/empty-state.js";
 import { escapeHtml } from "../utils/dom.js";
 import { iconSvg } from "../ui/icons.js";
+import { loadData } from "../core/data-state.js";
+import { appStore, setSharedData, subscribeToSharedData } from "../core/store.js";
+import { RISK_LEVELS } from "../utils/risk.js";
 
 const styles = ["risk-map.css", "risk-map-responsive.css", "layout-overrides.css"];
 const layerOptions = [["riskZones", "Risk zones", "#F77F00"], ["incidents", "Incidents", "#941B0C"], ["hotspots", "Hotspots", "#BC3908"], ["fireStations", "Fire stations", "#220901"]];
-const riskLevels = [["Low", "#2E9E5B"], ["Moderate", "#F4C430"], ["High", "#F77F00"], ["Very high", "#D62828"]];
+const riskLevels = RISK_LEVELS.map(({ label, color }) => [label, color]);
 const days = ["Today", "+1", "+2", "+3", "+4", "+5", "+6", "+7"];
+const detailLoaders = new WeakMap();
 function ensureStyles() {
   for (const file of styles) {
     const id = `phase3-${file}`;
@@ -40,33 +45,53 @@ export async function mount(main) {
   let activeAreas = [];
   let activeIncidents = [];
   let activeStations = [];
+  let activeHotspots = [];
   let activeWeather = null;
+  let activeBoundaries = null;
+  let activeForecastAvailable = false;
+  let timelineController = null;
   let debounce;
   let searchController;
   const buildLayers = () => addMapLayers(currentMap, {
     areas: activeAreas,
     incidents: activeIncidents,
     stations: activeStations,
-    hotspots: activeAreas.map((area) => ({ lat: area.center?.[0], lng: area.center?.[1], score: area.score })),
+    hotspots: activeHotspots,
     selectedAreaId,
     visibility: layers,
     onSelectArea: (id) => {
       selectedAreaId = id;
+      setSharedData({ selectedBarangay: id });
       const area = activeAreas.find((item) => item.id === id);
       if (area) {
         const params = new URLSearchParams(window.location.search);
         params.set("area", id);
         window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
-        showAreaDetails(main.querySelector(".risk-map-screen"), area, activeWeather);
+        showAreaDetails(main.querySelector(".risk-map-screen"), area, activeWeather, day);
       }
     },
   });
+  const attachBoundaryGeometry = (areas, boundaries) => {
+    const features = boundaries?.features || [];
+    return areas.map((area) => {
+      const feature = features.find(({ id, properties = {} }) =>
+        String(id ?? properties.id ?? "") === String(area.id)
+        || String(properties.name ?? properties.barangay ?? "").toLowerCase() === String(area.name ?? "").toLowerCase());
+      return feature ? { ...area, geometry: feature.geometry, center: area.center || feature.properties?.center } : area;
+    });
+  };
   const load = async () => {
     try {
-      const [areas, incidents, stations, weather] = await Promise.all([fetchRiskForDay(day), fetchIncidents(), fetchStations(), fetchWeather()]);
-      activeAreas = areas; activeIncidents = incidents; activeStations = stations;
+      const [riskAreas, forecast, boundaries, incidents, stations, weather, hotspots] = await Promise.all([
+        fetchRiskAreas(), fetchRiskForDay(day), getBarangayBoundaries(), fetchIncidents(), fetchStations(), fetchWeather(), fetchRiskHotspots(day),
+      ]);
+      activeBoundaries = boundaries;
+      activeForecastAvailable = forecast.length > 0;
+      activeAreas = attachBoundaryGeometry(forecast.length ? forecast : riskAreas, boundaries);
+      activeIncidents = incidents; activeStations = stations; activeHotspots = hotspots;
       activeWeather = weather;
-      render(main, { areas, incidents, stations, weather });
+      setSharedData({ riskScores: activeAreas, weather });
+      render(main, { areas: activeAreas, incidents, stations, weather });
       const mapHost = main.querySelector(".risk-map-view");
       const created = await createMap(mapHost, { interactive: true, zoom: 12.1 });
       currentMap = created.map;
@@ -74,9 +99,18 @@ export async function mount(main) {
       zoom.addTo(currentMap);
       layerSet = await buildLayers();
       main.querySelector(".map-loading-veil")?.remove();
-      if (areas.length === 0) main.querySelector(".map-empty-banner").hidden = !showNoData;
-      const selected = areas.find((area) => area.id === selectedAreaId);
-      if (selected) showAreaDetails(main.querySelector(".risk-map-screen"), selected, weather);
+      if (activeAreas.length === 0) main.querySelector(".map-empty-banner").hidden = !showNoData;
+      const selectedBarangay = appStoreSelection();
+      if (selectedBarangay && !selectedAreaId) selectedAreaId = selectedBarangay;
+      const selected = activeAreas.find((area) => area.id === selectedAreaId);
+      if (selected) showAreaDetails(main.querySelector(".risk-map-screen"), selected, weather, day);
+      subscribeToSharedData("selectedBarangay", (id) => {
+        if (!id || id === selectedAreaId) return;
+        selectedAreaId = id;
+        layerSet?.updateData({ selectedAreaId });
+        const area = activeAreas.find((item) => item.id === id);
+        if (area) showAreaDetails(main.querySelector(".risk-map-screen"), area, activeWeather, day);
+      });
       return { weather };
     } catch (error) {
       main.innerHTML = `<div class="risk-map-error"><div class="query-error" role="alert"><b>Map data could not be loaded. Retry to restore the risk layers.</b><small>${escapeHtml(error instanceof Error ? error.message : "An unexpected map error occurred.")}</small><button type="button" class="button button-primary">Retry</button></div></div>`;
@@ -120,6 +154,7 @@ export async function mount(main) {
     }
     const modeControl = createMapModeControl({ value: mode, label: "Map visualization", className: "risk-map-mode-control", onChange: (next) => {
       mode = next;
+      layerSet?.setMode?.(next);
       const visible = {
         riskZones: layers.riskZones && next === "risk",
         incidents: layers.incidents && next === "risk",
@@ -151,11 +186,29 @@ export async function mount(main) {
       if (day) params.set("day", String(day)); else params.delete("day");
       window.history.replaceState(null, "", `${window.location.pathname}${params.size ? `?${params}` : ""}`);
       try {
-        const nextAreas = await fetchRiskForDay(day);
-        activeAreas = nextAreas;
-        layerSet?.destroy();
-        layerSet = await buildLayers();
-        if (!nextAreas.length) layout.querySelector(".map-empty-banner").hidden = !showNoData;
+        timelineController?.abort();
+        timelineController = new AbortController();
+        const signal = timelineController.signal;
+        const [nextForecast, nextHotspots] = await Promise.all([
+          fetchRiskForDay(day, { signal }), fetchRiskHotspots(day, { signal }),
+        ]);
+        if (signal.aborted) return;
+        activeForecastAvailable = nextForecast.length > 0;
+        activeHotspots = nextHotspots;
+        const nextAreas = activeForecastAvailable ? nextForecast : await fetchRiskAreas({ signal });
+        activeAreas = attachBoundaryGeometry(nextAreas, activeBoundaries);
+        setSharedData({ riskScores: activeAreas });
+        layerSet?.updateData({ areas: activeAreas, hotspots: activeHotspots });
+        const selectedArea = activeAreas.find((area) => area.id === selectedAreaId);
+        if (selectedArea) showAreaDetails(layout, selectedArea, activeWeather, day);
+        const hasPredictions = activeForecastAvailable;
+        timeline.disabled = !hasPredictions;
+        layout.querySelectorAll("[data-day], .timeline-heading>button").forEach((control) => { control.disabled = !hasPredictions; });
+        layout.querySelector(".timeline-empty-note").hidden = hasPredictions;
+        layout.querySelector(".timeline-heading strong").textContent = hasPredictions
+          ? (day === 0 ? "Today" : `Today + ${day} day${day === 1 ? "" : "s"}`)
+          : "No predictions available";
+        if (!activeAreas.length) layout.querySelector(".map-empty-banner").hidden = !showNoData;
       } catch (error) {
         layout.dispatchEvent(new CustomEvent("app:toast", { bubbles: true, detail: { message: error.message || "Risk forecast could not be loaded.", type: "error" } }));
       }
@@ -200,6 +253,14 @@ export async function mount(main) {
             button.innerHTML = `${iconSvg("pin", 14)}<span>${escapeHtml(suggestion.name)}</span>`;
             button.addEventListener("click", () => {
               if (Number.isFinite(suggestion.lat) && Number.isFinite(suggestion.lng)) currentMap?.setView([suggestion.lat, suggestion.lng], 15);
+              const normalizedName = String(suggestion.name || "").toLowerCase();
+              const matchedArea = activeAreas.find((area) => normalizedName.includes(String(area.name || "").toLowerCase()));
+              if (matchedArea) {
+                selectedAreaId = matchedArea.id;
+                layerSet?.updateData({ selectedAreaId });
+                setSharedData({ selectedBarangay: selectedAreaId });
+                showAreaDetails(layout, matchedArea, activeWeather, day);
+              }
               input.value = ""; input.setAttribute("aria-expanded", "false"); results.hidden = true;
             });
             results.append(button);
@@ -212,33 +273,60 @@ export async function mount(main) {
     if (!areas.length) {
       layout.querySelector(".map-empty-banner").hidden = !showNoData;
       timeline.disabled = true;
-    } else timeline.disabled = false;
+    } else timeline.disabled = !activeForecastAvailable;
+    layout.querySelector(".timeline-empty-note").hidden = activeForecastAvailable;
+    if (!activeForecastAvailable) {
+      layout.querySelector(".timeline-empty-note").textContent = "No predictions available";
+      layout.querySelector(".timeline-heading strong").textContent = "No predictions available";
+      layout.querySelectorAll("[data-day], .timeline-heading>button").forEach((control) => { control.disabled = true; });
+    }
     void weather;
   }
 }
 
-function showAreaDetails(screen, area, weather) {
+function appStoreSelection() {
+  return appStore.getState().selectedBarangay;
+}
+
+function showAreaDetails(screen, area, weather, day) {
   const slot = screen.querySelector(".selected-area-slot");
   if (!slot) return;
   const content = screen.querySelector(".map-side-panel-content");
   content.hidden = false;
   screen.querySelector(".map-side-panel-toggle")?.setAttribute("aria-expanded", "true");
-  slot.innerHTML = `<aside class="area-detail-panel area-detail-inline" aria-label="Selected area: ${escapeHtml(area.name)}">
-    <button type="button" class="area-back-controls">${iconSvg("arrow", 14)}Back to map controls</button>
-    <div class="area-panel-heading"><div><span class="eyebrow">SELECTED AREA</span><h2>${escapeHtml(area.name)}</h2><p>${iconSvg("pin", 11)} Northern Tacloban · ${Number(area.areaKm2).toFixed(1)} km²</p></div></div>
-    <div class="area-risk-note"><span class="area-risk-chip"></span><p>Risk is expected to remain elevated for the next 24 hours.</p></div>
-    <section class="area-factors"><span class="eyebrow">PRIMARY CONTRIBUTING FACTORS</span><h3>Risk DNA</h3><div class="area-dna"></div></section>
-    <div class="ai-explanation"><span>${iconSvg("flame", 15)}</span><div><b>AI risk explanation</b><p>${escapeHtml(area.explanation)}</p></div></div>
-    <div class="area-weather-row"><span><b>${weather?.temperatureC ?? "—"}°</b><small>Temp</small></span><span><b>${weather?.humidityPercent ?? "—"}%</b><small>Humidity</small></span><span><b>${weather?.windKph ?? "—"}</b><small>km/h ${escapeHtml(weather?.windDirection ?? "")}</small></span></div>
-    <section class="nearest-station"><div><small>NEAREST STATION</small><b>${escapeHtml(area.nearestStation.name)}</b><span>${Number(area.nearestStation.distanceKm).toFixed(1)} km · est. ${area.nearestStation.responseMinutes} min</span></div></section>
-    <div class="area-actions"><a class="button button-primary" href="what-if.html?area=${encodeURIComponent(area.id)}">Run What-If</a><a class="button button-secondary" href="reports.html?area=${encodeURIComponent(area.id)}">Generate report</a></div>
-  </aside>`;
-  const chip = createRiskChip(area.level);
-  slot.querySelector(".area-risk-chip").append(chip);
-  renderRiskDna(slot.querySelector(".area-dna"), area.factors);
-  slot.querySelector(".area-back-controls").addEventListener("click", () => {
-    const params = new URLSearchParams(window.location.search);
-    params.delete("area");
-    window.location.assign(`${window.location.pathname}${params.size ? `?${params}` : ""}`);
+  detailLoaders.get(slot)?.cancel();
+  const details = loadData((id, selectedDay, signal) => fetchRiskArea(id, selectedDay, { signal }), [area.id, day], {
+    container: slot,
+    loading(container) {
+      container.innerHTML = '<aside class="area-detail-panel area-detail-inline" aria-label="Loading selected area"><span class="skeleton"></span></aside>';
+    },
+    errorTitle: "Area details could not be loaded",
+    errorMessage: "Retry to load risk factors, weather and the nearest station.",
+    success(container, detail) {
+      const safe = { ...area, ...detail };
+      const station = safe.nearestStation || {};
+      container.innerHTML = `<aside class="area-detail-panel area-detail-inline" aria-label="Selected area: ${escapeHtml(safe.name)}">
+        <button type="button" class="area-back-controls">${iconSvg("arrow", 14)}Back to map controls</button>
+        <div class="area-panel-heading"><div><span class="eyebrow">SELECTED AREA</span><h2>${escapeHtml(safe.name)}</h2><p>${iconSvg("pin", 11)} ${Number.isFinite(Number(safe.areaKm2)) ? `${Number(safe.areaKm2).toFixed(1)} km²` : "Area details"}</p></div></div>
+        <div class="area-risk-note"><span class="area-risk-chip"></span><p>${escapeHtml(safe.explanation || "Risk factors are based on the latest available data.")}</p></div>
+        <section class="area-factors"><span class="eyebrow">PRIMARY CONTRIBUTING FACTORS</span><h3>Risk DNA</h3><div class="area-dna"></div></section>
+        <div class="ai-explanation"><span>${iconSvg("flame", 15)}</span><div><b>AI risk explanation</b><p>${escapeHtml(safe.explanation)}</p></div></div>
+        <div class="area-weather-row"><span><b>${escapeHtml(weather?.temperatureC ?? "—")}°</b><small>Temp</small></span><span><b>${escapeHtml(weather?.humidityPercent ?? "—")}%</b><small>Humidity</small></span><span><b>${escapeHtml(weather?.windKph ?? "—")}</b><small>km/h ${escapeHtml(weather?.windDirection ?? "")}</small></span></div>
+        <section class="nearest-station"><div><small>NEAREST STATION</small><b>${escapeHtml(station.name)}</b><span>${escapeHtml(station.distanceKm ?? "—")} km · est. ${escapeHtml(station.responseMinutes ?? "—")} min</span></div></section>
+        <div class="area-actions"><a class="button button-primary" href="what-if.html?area=${encodeURIComponent(safe.id)}">Run What-If</a><a class="button button-secondary" href="reports.html?area=${encodeURIComponent(safe.id)}">Generate report</a></div>
+      </aside>`;
+      const chip = createRiskChip(safe.riskLevel || safe.level);
+      container.querySelector(".area-risk-chip").append(chip);
+      renderRiskDna(container.querySelector(".area-dna"), safe.factors || []);
+      container.querySelector(".area-back-controls").addEventListener("click", () => {
+        setSharedData({ selectedBarangay: null });
+        const params = new URLSearchParams(window.location.search);
+        params.delete("area");
+        window.history.replaceState(null, "", `${window.location.pathname}${params.size ? `?${params}` : ""}`);
+        container.replaceChildren(createEmptyState("No area selected", "Select an area on the map to see its risk, factors and nearest station.", "pin"));
+      });
+    },
   });
+  detailLoaders.set(slot, details);
+  void details.load();
 }

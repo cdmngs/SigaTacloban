@@ -92,6 +92,7 @@ export async function createMap(container, { interactive = true, zoom = 12.1, ti
   return {
     map,
     L,
+    invalidateSize: invalidate,
     destroy,
   };
 }

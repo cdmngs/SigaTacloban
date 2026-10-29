@@ -1,12 +1,33 @@
-import { USE_MOCKS } from "./config.js";
-import { requestJson } from "./client.js";
-import { mockDelay } from "./mockDelay.js";
-const EMPTY_TRENDS = {
-  period: "12m",
-  kpis: { incidentsYtd: 0, incidentsChangePercent: 0, averageRisk: 0, averageRiskChangePercent: 0, peakMonth: "—", peakMonthIncidents: 0, forecastTrend: "—", forecastChangePercent: 0 },
-  points: [],
-};
-export async function fetchTrends(period) {
-  if (USE_MOCKS) { await mockDelay(); return { ...EMPTY_TRENDS, period, kpis: { ...EMPTY_TRENDS.kpis }, points: [] }; }
-  return requestJson(`/trends?period=${encodeURIComponent(period)}`);
+import { api, unwrapResponse } from "./client.js";
+
+export async function fetchTrends(period, options = {}) {
+  const { areaId, ...requestOptions } = options;
+  return unwrapResponse(await api.get("/trends", {
+    ...requestOptions,
+    query: { period, ...(areaId ? { areaId } : {}) },
+    mockSample: "trends-summary",
+  }));
+}
+
+export async function fetchTrendBarangays(period, limit = 5, options = {}) {
+  const { areaId, ...requestOptions } = options;
+  const rows = unwrapResponse(await api.get("/trends/barangays", {
+    ...requestOptions,
+    query: { period, limit, ...(areaId ? { areaId } : {}) },
+    mockSample: "trends-barangays",
+    mockTransform: (sample, meta) => {
+      const selected = areaId ? sample.filter((row) => row.id === areaId) : sample;
+      return { data: selected, meta: { ...meta, total: selected.length, page: 1, pageSize: limit } };
+    },
+  })) || [];
+  return rows.map((row) => ({ ...row, score: row.score ?? row.riskScore }));
+}
+
+export async function exportTrends(period, options = {}) {
+  const { areaId, ...requestOptions } = options;
+  return unwrapResponse(await api.get("/trends/export.csv", {
+    ...requestOptions,
+    query: { period, ...(areaId ? { areaId } : {}) },
+    mockSample: "trends-export",
+  }));
 }

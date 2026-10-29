@@ -1,18 +1,34 @@
+import { formatDate, formatDateTime, formatNumber, formatPercent, formatTemperature, formatTime, formatValue } from "../utils/format.js";
+
 const readValue = (row, column) => row[column.key];
 const visibleValue = (row, column) => column.render ? column.render(row) : readValue(row, column);
 
-function appendCellContent(cell, value) {
-  if (value instanceof Node) cell.append(value);
-  else cell.textContent = value === null || value === undefined ? "" : String(value);
+function formatCellValue(value, column) {
+  if (column.formatter) return formatValue(column.formatter(value));
+  if (column.type === "date") return formatDate(value);
+  if (column.type === "datetime") return formatDateTime(value);
+  if (column.type === "time") return formatTime(value);
+  if (column.type === "percent") return formatPercent(value);
+  if (column.type === "temperature") return formatTemperature(value);
+  return typeof value === "number" ? formatNumber(value) : formatValue(value);
 }
 
-export function renderDataTable(container, columns, rows, { pageSize = 10, emptyMessage = "No data yet", sortable = true } = {}) {
+function appendCellContent(cell, value, column) {
+  if (value instanceof Node) cell.append(value);
+  else cell.textContent = formatCellValue(value, column);
+}
+
+export function renderDataTable(container, columns, rows, {
+  pageSize = 10, emptyMessage = "No data yet", sortable = true, getRowId = null, selectedId = null, onSelect = null,
+} = {}) {
   if (!(container instanceof HTMLElement) || !Array.isArray(columns) || !Array.isArray(rows)) {
     throw new TypeError("A table container, columns, and rows are required.");
   }
   let currentRows = [...rows];
   let page = 1;
   let sort = null;
+  let currentSelectedId = selectedId;
+  const selectable = typeof getRowId === "function" && typeof onSelect === "function";
   const media = window.matchMedia("(max-width: 767px)");
   const safePageSize = Math.max(1, Number(pageSize) || 10);
 
@@ -65,19 +81,28 @@ export function renderDataTable(container, columns, rows, { pageSize = 10, empty
       if (!pageRows.length) {
         const empty = document.createElement("div");
         empty.className = "empty-state table-empty-state";
-        empty.textContent = emptyMessage;
+        empty.textContent = formatValue(emptyMessage);
         cards.append(empty);
       }
       for (const row of pageRows) {
         const card = document.createElement("article");
         card.className = "mobile-table-row";
+        if (selectable) {
+          const rowId = getRowId(row);
+          card.setAttribute("aria-selected", String(Object.is(rowId, currentSelectedId)));
+          card.tabIndex = 0;
+          card.addEventListener("click", () => selectRow(row));
+          card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectRow(row); }
+          });
+        }
         for (const [index, column] of columns.entries()) {
           const field = document.createElement("div");
           if (index === 0) field.classList.add("mobile-table-primary");
           const label = document.createElement("small");
-          label.textContent = column.label;
+          label.textContent = formatValue(column.label);
           const value = document.createElement("span");
-          appendCellContent(value, visibleValue(row, column));
+          appendCellContent(value, visibleValue(row, column), column);
           field.append(label, value);
           card.append(field);
         }
@@ -101,14 +126,14 @@ export function renderDataTable(container, columns, rows, { pageSize = 10, empty
         const button = document.createElement("button");
         button.type = "button";
         button.className = "table-sort-button";
-        button.textContent = column.label;
+        button.textContent = formatValue(column.label);
         button.addEventListener("click", () => {
           sort = { key: column.key, direction: sort?.key === column.key && sort.direction === "asc" ? "desc" : "asc" };
           page = 1;
           paint();
         });
         cell.append(button);
-      } else cell.textContent = column.label;
+      } else cell.textContent = formatValue(column.label);
       headerRow.append(cell);
     }
     head.append(headerRow);
@@ -118,15 +143,25 @@ export function renderDataTable(container, columns, rows, { pageSize = 10, empty
       const emptyCell = document.createElement("td");
       emptyCell.colSpan = Math.max(1, columns.length);
       emptyCell.className = "table-empty-state";
-      emptyCell.textContent = emptyMessage;
+      emptyCell.textContent = formatValue(emptyMessage);
       emptyRow.append(emptyCell);
       body.append(emptyRow);
     }
     for (const row of pageRows) {
       const tableRow = document.createElement("tr");
+      if (selectable) {
+        tableRow.tabIndex = 0;
+        tableRow.setAttribute("aria-selected", String(Object.is(getRowId(row), currentSelectedId)));
+        tableRow.addEventListener("click", (event) => {
+          if (!event.target.closest("button,a,input,select,textarea")) selectRow(row);
+        });
+        tableRow.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectRow(row); }
+        });
+      }
       for (const column of columns) {
         const cell = document.createElement("td");
-        appendCellContent(cell, visibleValue(row, column));
+        appendCellContent(cell, visibleValue(row, column), column);
         tableRow.append(cell);
       }
       body.append(tableRow);
@@ -136,13 +171,30 @@ export function renderDataTable(container, columns, rows, { pageSize = 10, empty
     container.replaceChildren(wrapper, makePagination(totalPages));
   };
   const onMediaChange = () => paint();
+  const selectRow = (row) => {
+    currentSelectedId = getRowId(row);
+    paint();
+    onSelect(row);
+  };
   media.addEventListener("change", onMediaChange);
   paint();
   return {
     setRows(nextRows) {
       if (!Array.isArray(nextRows)) throw new TypeError("Table rows must be an array.");
       currentRows = [...nextRows];
-      page = 1;
+      if (selectable && !currentRows.some((row) => Object.is(getRowId(row), currentSelectedId))) currentSelectedId = null;
+      paint();
+    },
+    get selectedId() { return currentSelectedId; },
+    setPage(nextPage) {
+      page = Math.max(1, Number(nextPage) || 1);
+      paint();
+    },
+    setSort(nextSort) {
+      if (nextSort !== null && (!columns.some((column) => column.key === nextSort.key) || !["asc", "desc"].includes(nextSort.direction))) {
+        throw new TypeError("Table sort must identify a column and an asc/desc direction.");
+      }
+      sort = nextSort ? { ...nextSort } : null;
       paint();
     },
     destroy() {

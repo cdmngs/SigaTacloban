@@ -179,6 +179,7 @@
     height:calc(100dvh - 118px);
     padding:10px 12px;
   }
+  .page-content.page-map .risk-map-screen .prediction-timeline{bottom:32px}
   .page-content.page-map .risk-map-layout .risk-map-mode-control{
     width:min(270px,100%);
     margin-left:auto;

@@ -1,4 +1,5 @@
-import { getManagedUsers, getRoleLabel, roleFromEmail, signIn } from "../core/auth.js";
+import { getRoleLabel } from "../core/auth.js";
+import { login } from "../api/auth.js";
 import { iconSvg } from "../ui/icons.js";
 
 const htmlEscape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -9,8 +10,7 @@ function mapIllustration() {
 
 export function mount(main) {
   const storedEmail = localStorage.getItem("sigatacloban-remembered-email") || "";
-  const savedEmail = getManagedUsers().some((user) => user.email.toLowerCase() === storedEmail.toLowerCase()) ? storedEmail : "";
-  if (storedEmail && !savedEmail) localStorage.removeItem("sigatacloban-remembered-email");
+  const savedEmail = storedEmail;
   main.innerHTML = `
     <main class="login-page">
       <section class="login-visual">
@@ -24,7 +24,7 @@ export function mount(main) {
         <label class="form-label" for="password">Password</label><div class="input-wrap"><span aria-hidden="true">${iconSvg("lock", 16)}</span><input id="password" name="password" type="password" aria-describedby="password-error" aria-invalid="false" placeholder="Enter your password" autocomplete="current-password"><button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">${iconSvg("eye", 20)}</button></div><small class="field-error" id="password-error" data-error="password" role="alert" hidden></small>
         <div class="login-options"><label class="checkbox-label"><input type="checkbox" name="remember" ${savedEmail ? "checked" : ""}><span>Remember me</span></label><button type="button" class="text-action forgot-password">Forgot password?</button></div>
         <small class="auth-error" role="alert" hidden></small><button class="button button-primary login-submit" type="submit">Sign in securely ${iconSvg("arrow", 17)}</button>
-        <div class="signing-role"><span aria-hidden="true">${iconSvg("shield", 16)}</span><div><small>Signing in as</small><b class="role-preview">${getRoleLabel(roleFromEmail(savedEmail))}</b><p>Your role determines the tools and data you can access.</p></div></div>
+        <div class="signing-role"><span aria-hidden="true">${iconSvg("shield", 16)}</span><div><small>Signing in as</small><b class="role-preview">Verified after sign in</b><p>Your role determines the tools and data you can access.</p></div></div>
         <p class="login-support">Need help? Contact <b>BFP Tacloban IT Support</b></p>
       </form></section>
     </main><div class="toast-stack" role="status" aria-live="polite" aria-atomic="true"></div>`;
@@ -32,6 +32,12 @@ export function mount(main) {
   const form = main.querySelector(".login-form");
   const emailInput = main.querySelector("#email");
   const passwordInput = main.querySelector("#password");
+  const sessionError = sessionStorage.getItem("sigatacloban-session-error");
+  if (sessionError) {
+    main.querySelector(".auth-error").textContent = sessionError;
+    main.querySelector(".auth-error").hidden = false;
+    sessionStorage.removeItem("sigatacloban-session-error");
+  }
   const setError = (field, message) => {
     const element = main.querySelector(`[data-error="${field}"]`);
     const input = main.querySelector(`#${field}`);
@@ -40,7 +46,7 @@ export function mount(main) {
     input.setAttribute("aria-invalid", String(Boolean(message)));
     element.previousElementSibling?.classList.toggle("has-error", Boolean(message));
   };
-  emailInput.addEventListener("input", () => { main.querySelector(".role-preview").textContent = getRoleLabel(roleFromEmail(emailInput.value)); setError("email", ""); });
+  emailInput.addEventListener("input", () => setError("email", ""));
   passwordInput.addEventListener("input", () => setError("password", ""));
   main.querySelector(".password-toggle").addEventListener("click", (event) => {
     const button = event.currentTarget;
@@ -59,23 +65,24 @@ export function mount(main) {
     setError("password", "");
     const email = emailInput.value.trim();
     const password = passwordInput.value;
-    const validUser = getManagedUsers().some((user) => user.email.toLowerCase() === email.toLowerCase());
-    if (!validUser) { setError("email", "Use an authorized BFP account."); emailInput.focus(); return; }
-    if (password.length < 6) { setError("password", "Password must be at least 6 characters."); passwordInput.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("email", "Enter a valid email address."); emailInput.focus(); return; }
+    if (!password) { setError("password", "Enter your password."); passwordInput.focus(); return; }
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
     submit.textContent = "Signing in…";
-    await new Promise((resolve) => window.setTimeout(resolve, 450));
-    if (form.elements.remember.checked) localStorage.setItem("sigatacloban-remembered-email", email);
-    else localStorage.removeItem("sigatacloban-remembered-email");
-    const result = signIn(email, password);
-    if (!result.ok) {
+    const authError = main.querySelector(".auth-error");
+    authError.hidden = true;
+    try {
+      const result = await login({ email, password });
+      if (form.elements.remember.checked) localStorage.setItem("sigatacloban-remembered-email", email);
+      else localStorage.removeItem("sigatacloban-remembered-email");
+      main.querySelector(".role-preview").textContent = getRoleLabel(result.user.role);
+      window.location.assign("dashboard.html");
+    } catch (error) {
       submit.disabled = false;
       submit.innerHTML = `Sign in securely ${iconSvg("arrow", 17)}`;
-      main.querySelector(".auth-error").textContent = result.message;
-      main.querySelector(".auth-error").hidden = false;
-      return;
+      authError.textContent = error.message || "Sign in failed. Check your connection and try again.";
+      authError.hidden = false;
     }
-    window.location.assign("dashboard.html");
   });
 }

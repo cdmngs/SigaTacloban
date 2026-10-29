@@ -1,0 +1,674 @@
+{
+  "edge": "Edg/156.0.4314.42",
+  "results": [
+    {
+      "page": "dashboard",
+      "width": 1440,
+      "title": "Dashboard · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 760,
+      "overflowing": []
+    },
+    {
+      "page": "risk-map",
+      "width": 1440,
+      "title": "Risk Map · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 413,
+      "overflowing": []
+    },
+    {
+      "page": "weather",
+      "width": 1440,
+      "title": "Weather · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 2123,
+      "overflowing": []
+    },
+    {
+      "page": "trends",
+      "width": 1440,
+      "title": "Trends · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 454,
+      "overflowing": []
+    },
+    {
+      "page": "what-if",
+      "width": 1440,
+      "title": "What-If · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 704,
+      "overflowing": []
+    },
+    {
+      "page": "incidents",
+      "width": 1440,
+      "title": "Incidents · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1499,
+      "horizontalOverflow": true,
+      "contentLength": 668,
+      "overflowing": [
+        {
+          "selector": "table.incident-table",
+          "left": 1074,
+          "right": 1508,
+          "width": 434
+        },
+        {
+          "selector": "thead",
+          "left": 1074,
+          "right": 1508,
+          "width": 434
+        },
+        {
+          "selector": "tr",
+          "left": 1074,
+          "right": 1508,
+          "width": 434
+        },
+        {
+          "selector": "th",
+          "left": 1419,
+          "right": 1492,
+          "width": 73
+        },
+        {
+          "selector": "button.sort-header",
+          "left": 1425,
+          "right": 1486,
+          "width": 61
+        },
+        {
+          "selector": "th",
+          "left": 1492,
+          "right": 1508,
+          "width": 16
+        },
+        {
+          "selector": "tbody",
+          "left": 1074,
+          "right": 1508,
+          "width": 434
+        },
+        {
+          "selector": "tr",
+          "left": 1074,
+          "right": 1508,
+          "width": 434
+        },
+        {
+          "selector": "td",
+          "left": 1419,
+          "right": 1492,
+          "width": 73
+        },
+        {
+          "selector": "td",
+          "left": 1492,
+          "right": 1508,
+          "width": 16
+        }
+      ]
+    },
+    {
+      "page": "coverage",
+      "width": 1440,
+      "title": "Coverage · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 397,
+      "overflowing": []
+    },
+    {
+      "page": "alerts",
+      "width": 1440,
+      "title": "Alerts · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 381,
+      "overflowing": []
+    },
+    {
+      "page": "reports",
+      "width": 1440,
+      "title": "Reports · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 841,
+      "overflowing": []
+    },
+    {
+      "page": "users",
+      "width": 1440,
+      "title": "Users · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 1213,
+      "overflowing": []
+    },
+    {
+      "page": "ml-evaluation",
+      "width": 1440,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "style-guide",
+      "width": 1440,
+      "title": "Style Guide · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 1905,
+      "overflowing": []
+    },
+    {
+      "page": "403",
+      "width": 1440,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "documentScrollWidth": 1425,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "404",
+      "width": 1440,
+      "title": "Page not found · SigaTacloban",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "documentScrollWidth": 1440,
+      "horizontalOverflow": false,
+      "contentLength": 85,
+      "overflowing": []
+    },
+    {
+      "page": "dashboard",
+      "width": 768,
+      "title": "Dashboard · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 760,
+      "overflowing": []
+    },
+    {
+      "page": "risk-map",
+      "width": 768,
+      "title": "Risk Map · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "documentScrollWidth": 768,
+      "horizontalOverflow": false,
+      "contentLength": 413,
+      "overflowing": []
+    },
+    {
+      "page": "weather",
+      "width": 768,
+      "title": "Weather · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 2123,
+      "overflowing": []
+    },
+    {
+      "page": "trends",
+      "width": 768,
+      "title": "Trends · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "documentScrollWidth": 768,
+      "horizontalOverflow": false,
+      "contentLength": 454,
+      "overflowing": []
+    },
+    {
+      "page": "what-if",
+      "width": 768,
+      "title": "What-If · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 704,
+      "overflowing": []
+    },
+    {
+      "page": "incidents",
+      "width": 768,
+      "title": "Incidents · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 650,
+      "overflowing": []
+    },
+    {
+      "page": "coverage",
+      "width": 768,
+      "title": "Coverage · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 397,
+      "overflowing": []
+    },
+    {
+      "page": "alerts",
+      "width": 768,
+      "title": "Alerts · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "documentScrollWidth": 768,
+      "horizontalOverflow": false,
+      "contentLength": 381,
+      "overflowing": []
+    },
+    {
+      "page": "reports",
+      "width": 768,
+      "title": "Reports · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 1838,
+      "overflowing": []
+    },
+    {
+      "page": "users",
+      "width": 768,
+      "title": "Users · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 1213,
+      "overflowing": [
+        {
+          "selector": "table.user-table",
+          "left": 231,
+          "right": 1151,
+          "width": 920
+        },
+        {
+          "selector": "thead",
+          "left": 231,
+          "right": 1151,
+          "width": 920
+        },
+        {
+          "selector": "tr",
+          "left": 231,
+          "right": 1151,
+          "width": 920
+        },
+        {
+          "selector": "th",
+          "left": 709,
+          "right": 893,
+          "width": 184
+        },
+        {
+          "selector": "th",
+          "left": 893,
+          "right": 1004,
+          "width": 110
+        },
+        {
+          "selector": "th",
+          "left": 1004,
+          "right": 1096,
+          "width": 92
+        },
+        {
+          "selector": "th",
+          "left": 1096,
+          "right": 1151,
+          "width": 55
+        },
+        {
+          "selector": "tbody",
+          "left": 231,
+          "right": 1151,
+          "width": 920
+        },
+        {
+          "selector": "tr",
+          "left": 231,
+          "right": 1151,
+          "width": 920
+        },
+        {
+          "selector": "td",
+          "left": 709,
+          "right": 893,
+          "width": 184
+        },
+        {
+          "selector": "td",
+          "left": 893,
+          "right": 1004,
+          "width": 110
+        },
+        {
+          "selector": "span.last-active",
+          "left": 909,
+          "right": 1026,
+          "width": 116
+        }
+      ]
+    },
+    {
+      "page": "ml-evaluation",
+      "width": 768,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "style-guide",
+      "width": 768,
+      "title": "Style Guide · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 1905,
+      "overflowing": []
+    },
+    {
+      "page": "403",
+      "width": 768,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 753,
+      "documentScrollWidth": 753,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "404",
+      "width": 768,
+      "title": "Page not found · SigaTacloban",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "documentScrollWidth": 768,
+      "horizontalOverflow": false,
+      "contentLength": 0,
+      "overflowing": []
+    },
+    {
+      "page": "dashboard",
+      "width": 375,
+      "title": "Dashboard · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 760,
+      "overflowing": []
+    },
+    {
+      "page": "risk-map",
+      "width": 375,
+      "title": "Risk Map · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 193,
+      "overflowing": []
+    },
+    {
+      "page": "weather",
+      "width": 375,
+      "title": "Weather · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 2123,
+      "overflowing": []
+    },
+    {
+      "page": "trends",
+      "width": 375,
+      "title": "Trends · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 454,
+      "overflowing": []
+    },
+    {
+      "page": "what-if",
+      "width": 375,
+      "title": "What-If · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 704,
+      "overflowing": []
+    },
+    {
+      "page": "incidents",
+      "width": 375,
+      "title": "Incidents · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 581,
+      "overflowing": []
+    },
+    {
+      "page": "coverage",
+      "width": 375,
+      "title": "Coverage · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 397,
+      "overflowing": []
+    },
+    {
+      "page": "alerts",
+      "width": 375,
+      "title": "Alerts · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 381,
+      "overflowing": []
+    },
+    {
+      "page": "reports",
+      "width": 375,
+      "title": "Reports · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 1656,
+      "overflowing": []
+    },
+    {
+      "page": "users",
+      "width": 375,
+      "title": "Users · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 1155,
+      "overflowing": [
+        {
+          "selector": "table.permissions-table",
+          "left": 30,
+          "right": 790,
+          "width": 760
+        },
+        {
+          "selector": "thead",
+          "left": 30,
+          "right": 790,
+          "width": 760
+        },
+        {
+          "selector": "tr",
+          "left": 30,
+          "right": 790,
+          "width": 760
+        },
+        {
+          "selector": "th",
+          "left": 308,
+          "right": 498,
+          "width": 190
+        },
+        {
+          "selector": "th",
+          "left": 498,
+          "right": 665,
+          "width": 166
+        },
+        {
+          "selector": "th",
+          "left": 665,
+          "right": 790,
+          "width": 125
+        },
+        {
+          "selector": "tbody",
+          "left": 30,
+          "right": 790,
+          "width": 760
+        },
+        {
+          "selector": "tr",
+          "left": 30,
+          "right": 790,
+          "width": 760
+        },
+        {
+          "selector": "td",
+          "left": 308,
+          "right": 498,
+          "width": 190
+        },
+        {
+          "selector": "span.permission-yes",
+          "left": 387,
+          "right": 419,
+          "width": 32
+        },
+        {
+          "selector": "svg",
+          "left": 395,
+          "right": 411,
+          "width": 16
+        },
+        {
+          "selector": "path",
+          "left": 399,
+          "right": 408,
+          "width": 9
+        }
+      ]
+    },
+    {
+      "page": "ml-evaluation",
+      "width": 375,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "style-guide",
+      "width": 375,
+      "title": "Style Guide · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 1934,
+      "overflowing": []
+    },
+    {
+      "page": "403",
+      "width": 375,
+      "title": "Access denied · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 161,
+      "overflowing": []
+    },
+    {
+      "page": "404",
+      "width": 375,
+      "title": "Page not found · SigaTacloban",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "documentScrollWidth": 375,
+      "horizontalOverflow": false,
+      "contentLength": 85,
+      "overflowing": []
+    }
+  ]
+}

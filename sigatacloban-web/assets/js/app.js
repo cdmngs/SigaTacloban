@@ -1,5 +1,9 @@
-import { getSession } from "./core/auth.js";
-import { canAccessRoute } from "./core/permissions.js";
+import { getSession, isAccessTokenExpired, signOut } from "./core/auth.js";
+import { canAccessRoute, setRolePermissionsFromApi } from "./core/permissions.js";
+import { getCurrentUser } from "./api/auth.js";
+import { getRolePermissions } from "./api/users.js";
+import { getAlertRules } from "./api/alerts.js";
+import { setSharedData } from "./core/store.js";
 import { renderLayout } from "./core/layout.js";
 import { titleForPage, goTo } from "./core/router.js";
 import { iconSvg } from "./ui/icons.js";
@@ -7,7 +11,7 @@ import { iconSvg } from "./ui/icons.js";
 const body = document.body;
 const shell = document.getElementById("app-shell");
 const page = body.dataset.page;
-const session = getSession();
+let session = getSession();
 const uiConsistencyStyles = document.createElement("link");
 uiConsistencyStyles.rel = "stylesheet";
 uiConsistencyStyles.href = "assets/css/ui-consistency.css?v=2";
@@ -33,15 +37,57 @@ const pagePath = page === "style-guide" ? "/style-guide" : `/${page}`;
 document.documentElement.lang = "en-PH";
 document.title = `${titleForPage(page)} · SigaTacloban`;
 
+let authenticated = false;
+let permissionError = null;
+if (session.user && session.token && (page !== "login" || !isAccessTokenExpired(session.token))) {
+  try {
+    if (isAccessTokenExpired(session.token)) {
+      if (!session.refreshToken) throw new Error("Your session has expired. Sign in again.");
+    }
+    session = { ...session, user: await getCurrentUser() };
+    session = getSession();
+    setSharedData({ currentUser: session.user });
+    authenticated = true;
+  } catch (error) {
+    if (error?.status === 401 || isAccessTokenExpired(session.token)) signOut();
+    sessionStorage.setItem("sigatacloban-session-error", error?.message || "Your session could not be verified.");
+  }
+}
+if (authenticated && page !== "login" && page !== "404") {
+  try {
+    const matrix = await getRolePermissions();
+    setRolePermissionsFromApi(matrix);
+    setSharedData({ rolePermissions: matrix });
+    try {
+      const rules = await getAlertRules();
+      setSharedData({
+        riskThresholds: {
+          moderate: Number.isFinite(rules?.moderateThreshold) ? rules.moderateThreshold : 40,
+          high: Number.isFinite(rules?.highThreshold) ? rules.highThreshold : 60,
+          veryHigh: Number.isFinite(rules?.veryHighThreshold) ? rules.veryHighThreshold : 80,
+        },
+      });
+    } catch (error) {
+      if (error?.status === 401) throw error;
+      console.error("Unable to preload risk thresholds.", error);
+    }
+  } catch (error) {
+    permissionError = error;
+    console.error("Unable to load role permissions.", error);
+  }
+}
+
 if (page === "index") {
-  goTo(session.user ? "dashboard.html" : "login.html");
-} else if (page === "login" && session.user) {
+  goTo(authenticated ? "dashboard.html" : "login.html");
+} else if (page === "login" && authenticated) {
   goTo("dashboard.html");
-} else if (page === "404" && !session.user) {
+} else if (page === "404" && !authenticated) {
   window.location.replace("login.html");
-} else if (!standalone && !session.user) {
+} else if (!standalone && !authenticated) {
   window.location.replace("login.html");
-} else if (page !== "403" && !standalone && !canAccessRoute(session.user.role, pagePath)) {
+} else if (permissionError && page !== "403" && !standalone) {
+  window.location.replace("403.html");
+} else if (page !== "403" && !standalone && authenticated && !canAccessRoute(session.user.role, pagePath)) {
   window.location.replace("403.html");
 }
 
@@ -54,7 +100,7 @@ if (standalone) {
     const { mount } = await import("./pages/errors.js");
     mount(main, page);
   }
-} else if (page !== "index" && session.user && (page === "403" || canAccessRoute(session.user.role, pagePath))) {
+} else if (page !== "index" && authenticated && (page === "403" || canAccessRoute(session.user.role, pagePath))) {
   renderLayout(shell, page, session.user);
   const main = document.getElementById("page-content");
   if (page === "risk-map") main.classList.add("page-map");

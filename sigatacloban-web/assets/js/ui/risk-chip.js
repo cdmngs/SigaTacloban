@@ -1,13 +1,14 @@
-const labels = { low: "Low", moderate: "Moderate", high: "High", veryhigh: "Very high" };
+import { formatRiskLevel } from "../utils/format.js";
 
 export function createRiskChip(level) {
-  if (!Object.hasOwn(labels, level)) throw new TypeError(`Unknown risk level: ${level}`);
+  const label = formatRiskLevel(level);
+  const key = label === "—" ? "unknown" : label.toLowerCase().replace(/\s+/g, "");
   const chip = document.createElement("span");
-  chip.className = `risk-chip risk-${level}`;
+  chip.className = `risk-chip risk-${key}`;
   const mark = document.createElement("i");
   mark.setAttribute("aria-hidden", "true");
   const text = document.createElement("span");
-  text.textContent = labels[level];
+  text.textContent = label;
   chip.append(mark, text);
   return chip;
 }

@@ -1,45 +1,124 @@
-import { USE_MOCKS } from "./config.js";
-import { requestJson } from "./client.js";
-import { mockDelay } from "./mockDelay.js";
+import { api, unwrapResponse } from "./client.js";
+import { USE_MOCK } from "./config.js";
 
-const ACCOUNTS = Object.freeze([
-  Object.freeze({ id: "admin-bfp", name: "Cale", email: "admin@bfp.gov.ph", role: "admin", stationUnit: "BFP Tacloban City", lastActive: "Online", active: true, pendingInvite: false }),
-  Object.freeze({ id: "prevention-bfp", name: "Josh Lewis", email: "prevention@bfp.gov.ph", role: "prevention", stationUnit: "Prevention Division", lastActive: "Online", active: true, pendingInvite: false }),
-  Object.freeze({ id: "operations-bfp", name: "John Earth", email: "operations@bfp.gov.ph", role: "operations", stationUnit: "Operations Command", lastActive: "Online", active: true, pendingInvite: false }),
-  Object.freeze({ id: "analyst-bfp", name: "Benedict Josef", email: "analyst@bfp.gov.ph", role: "analyst", stationUnit: "Intelligence Unit", lastActive: "Online", active: true, pendingInvite: false }),
-]);
-const mockReadOnlyError = () => new Error("The mock account directory is fixed to the four configured BFP accounts.");
+let mockUsers;
+const MOCK_USERS_KEY = "sigatacloban-mock-users";
 
-export async function listUsers() {
-  if (USE_MOCKS) { await mockDelay(); return ACCOUNTS.map((user) => ({ ...user })); }
-  return requestJson("/users");
+function restoreMockUsers() {
+  if (!USE_MOCK || mockUsers || !globalThis.sessionStorage) return;
+  const saved = globalThis.sessionStorage.getItem(MOCK_USERS_KEY);
+  if (saved !== null) {
+    const records = JSON.parse(saved);
+    if (!Array.isArray(records)) throw new TypeError("Saved mock users must be an array.");
+    mockUsers = records;
+  }
 }
-export async function addUser(user) {
-  if (!USE_MOCKS) return requestJson("/users", { method: "POST", body: JSON.stringify(user) });
-  await mockDelay();
-  throw mockReadOnlyError();
+
+function persistMockUsers() {
+  if (USE_MOCK && mockUsers && globalThis.sessionStorage) {
+    globalThis.sessionStorage.setItem(MOCK_USERS_KEY, JSON.stringify(mockUsers));
+  }
 }
-export async function updateUser(id, updates) {
-  if (!USE_MOCKS) return requestJson(`/users/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(updates) });
-  await mockDelay();
-  if (!ACCOUNTS.some((user) => user.id === id)) throw new Error("The requested account was not found.");
-  throw mockReadOnlyError();
+
+async function usersSample(signal) {
+  restoreMockUsers();
+  if (!mockUsers) mockUsers = unwrapResponse(await api.get("/users", { signal, mockSample: "users-list" }));
+  return mockUsers;
 }
-export async function deleteUser(id, currentEmail) {
-  if (!USE_MOCKS) return requestJson(`/users/${encodeURIComponent(id)}`, { method: "DELETE", headers: { "X-Current-User": currentEmail } });
-  await mockDelay();
-  if (!ACCOUNTS.some((user) => user.id === id) || ACCOUNTS.find((user) => user.id === id)?.email === currentEmail) return false;
-  throw mockReadOnlyError();
+
+export async function listUsers(options = {}) {
+  restoreMockUsers();
+  const response = await api.get("/users", {
+    ...options,
+    mockSample: "users-list",
+    mockTransform: (records, meta) => {
+      if (!mockUsers) mockUsers = records;
+      persistMockUsers();
+      return { data: mockUsers, meta: { ...meta, total: mockUsers.length } };
+    },
+  });
+  if (!mockUsers) mockUsers = unwrapResponse(response);
+  return unwrapResponse(response);
 }
-export async function resetUserPassword(id) {
-  if (!USE_MOCKS) return requestJson(`/users/${encodeURIComponent(id)}/password-reset`, { method: "POST" });
-  await mockDelay();
-  if (!ACCOUNTS.some((user) => user.id === id)) throw new Error("The requested account was not found.");
-  return id;
+
+export async function addUser(user, options = {}) {
+  await usersSample(options.signal);
+  const response = await api.post("/users", user, {
+    ...options,
+    mockSample: "users-create",
+    mockTransform: (sample) => {
+      const created = { ...sample, ...user, id: `user-mock-${Date.now()}`, pendingInvite: true };
+      mockUsers = [...(mockUsers || []), created];
+      persistMockUsers();
+      return { data: created, meta: {} };
+    },
+  });
+  return unwrapResponse(response);
 }
-export async function resendInvite(id) {
-  if (!USE_MOCKS) return requestJson(`/users/${encodeURIComponent(id)}/invite`, { method: "POST" });
-  await mockDelay();
-  if (!ACCOUNTS.some((user) => user.id === id)) throw new Error("The requested account was not found.");
-  return id;
+
+export async function updateUser(id, updates, options = {}) {
+  await usersSample(options.signal);
+  const response = await api.patch(`/users/${encodeURIComponent(id)}`, updates, {
+    ...options,
+    mockSample: "users-update",
+    mockTransform: (sample) => {
+      mockUsers = (mockUsers || []).map((user) => user.id === id ? { ...user, ...updates } : user);
+      persistMockUsers();
+      return { data: mockUsers.find((user) => user.id === id) || { ...sample, ...updates, id }, meta: {} };
+    },
+  });
+  return unwrapResponse(response);
+}
+
+export async function activateUser(id, options = {}) {
+  await usersSample(options.signal);
+  const response = await api.post(`/users/${encodeURIComponent(id)}/activate`, {}, {
+    ...options,
+    mockSample: "users-activate",
+    mockTransform: (sample) => {
+      mockUsers = (mockUsers || []).map((user) => user.id === id ? { ...user, active: true, pendingInvite: false } : user);
+      persistMockUsers();
+      return { data: mockUsers.find((user) => user.id === id) || sample, meta: {} };
+    },
+  });
+  return unwrapResponse(response);
+}
+
+export async function deactivateUser(id, options = {}) {
+  await usersSample(options.signal);
+  const response = await api.post(`/users/${encodeURIComponent(id)}/deactivate`, {}, {
+    ...options,
+    mockSample: "users-deactivate",
+    mockTransform: (sample) => {
+      mockUsers = (mockUsers || []).map((user) => user.id === id ? { ...user, active: false, pendingInvite: false } : user);
+      persistMockUsers();
+      return { data: mockUsers.find((user) => user.id === id) || sample, meta: {} };
+    },
+  });
+  return unwrapResponse(response);
+}
+
+export async function deleteUser(id, _currentEmail, options = {}) {
+  await usersSample(options.signal);
+  await api.delete(`/users/${encodeURIComponent(id)}`, {
+    ...options,
+    mockSample: "users-delete",
+    mockTransform: () => {
+      mockUsers = (mockUsers || []).filter((user) => user.id !== id);
+      persistMockUsers();
+      return { data: null, meta: {} };
+    },
+  });
+}
+
+export async function resetUserPassword(id, options = {}) {
+  return unwrapResponse(await api.post(`/users/${encodeURIComponent(id)}/password-reset`, {}, { ...options, mockSample: "users-password-reset" }));
+}
+
+export async function resendInvite(id, options = {}) {
+  return unwrapResponse(await api.post(`/users/${encodeURIComponent(id)}/invite`, {}, { ...options, mockSample: "users-invite" }));
+}
+
+export async function getRolePermissions(options = {}) {
+  return unwrapResponse(await api.get("/roles/permissions", { ...options, mockSample: "roles-permissions" }));
 }

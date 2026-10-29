@@ -1,0 +1,1 @@
+{"data":{"moderateThreshold":40,"highThreshold":60,"veryHighThreshold":80,"channels":{"inApp":true,"email":false,"sms":false},"quietHours":false,"recipients":{"admin":true,"prevention":true,"operations":true,"analyst":false}},"meta":{}}

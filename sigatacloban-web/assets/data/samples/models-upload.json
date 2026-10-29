@@ -1,0 +1,1 @@
+{"data":{"datasetId":"dataset-001","fileName":"incidents.csv","uploadedRecords":100,"validation":{"valid":true,"errors":[]},"preparation":{"rowsRead":100,"rowsRejected":0,"columns":["date","barangay","fireClass","severity","cause"],"dateRange":{"from":"2026-01-01","to":"2026-10-27"}},"rejectedRows":[]},"meta":{}}

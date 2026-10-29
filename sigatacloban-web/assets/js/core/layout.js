@@ -1,7 +1,11 @@
 import { filterNavigationGroups, roleLabels } from "./permissions.js";
 import { getRoleLabel, getUserInitials, signOut } from "./auth.js";
 import { iconSvg } from "../ui/icons.js";
-import { listAlerts } from "../api/alertsPartA.js";
+import { listAlerts } from "../api/alerts.js";
+import { fetchCityRisk } from "../api/risk.js";
+import { fetchWeatherAnalysis } from "../api/weatherAnalysis.js";
+import { setSharedData, startRefreshTimer, subscribeToSharedData } from "./store.js";
+import { logout } from "../api/auth.js";
 
 const groups = [
   { label: "OVERVIEW", links: [["Dashboard", "dashboard", "dashboard"], ["Risk Map", "risk-map", "map"]] },
@@ -13,6 +17,7 @@ const hrefFor = (slug) => `${slug}.html`;
 const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 
 export function renderLayout(shell, page, user) {
+  setSharedData({ currentUser: user });
   const titles = { "risk-map": "Risk Map", "what-if": "What-If", "ml-evaluation": "ML Evaluation", "style-guide": "Style Guide", users: "Users", "403": "Access denied" };
   const title = titles[page] || page.split("-").map((part) => part[0].toUpperCase() + part.slice(1)).join(" ");
   const visibleGroups = filterNavigationGroups(user.role, groups);
@@ -66,8 +71,15 @@ export function renderLayout(shell, page, user) {
       closeProfileMenu(true);
     }
   });
-  shell.querySelector(".profile-signout").addEventListener("click", () => { signOut(); window.location.assign("login.html"); });
-  shell.querySelector(".mobile-signout").addEventListener("click", () => { signOut(); window.location.assign("login.html"); });
+  const endSession = async () => {
+    try { await logout(); }
+    catch (error) {
+      console.error("Server sign-out failed; clearing the local session.", error);
+      signOut();
+    } finally { window.location.assign("login.html"); }
+  };
+  shell.querySelector(".profile-signout").addEventListener("click", () => { void endSession(); });
+  shell.querySelector(".mobile-signout").addEventListener("click", () => { void endSession(); });
   shell.querySelector(".sidebar-collapse").addEventListener("click", () => {
     const collapsed = shell.querySelector(".app-frame").classList.toggle("sidebar-collapsed");
     shell.querySelector(".sidebar-collapse").setAttribute("aria-label", collapsed ? "Expand navigation" : "Collapse navigation");
@@ -107,9 +119,9 @@ export function renderLayout(shell, page, user) {
   });
   const notificationButton = shell.querySelector(".notification-button");
   const notificationPanel = shell.querySelector(".alerts-popover");
-  const refreshNotifications = async () => {
-    const alerts = await listAlerts();
-    const unread = alerts.filter((alert) => !alert.read).length;
+  const renderNotifications = ({ notifications, alertCount }) => {
+    const alerts = notifications || [];
+    const unread = Number(alertCount) || 0;
     for (const badge of shell.querySelectorAll(".notification-count,.nav-alert-count")) {
       badge.textContent = String(unread);
       badge.hidden = unread === 0;
@@ -118,21 +130,51 @@ export function renderLayout(shell, page, user) {
     const list = notificationPanel.querySelector(".alerts-popover-list");
     if (!alerts.length) {
       list.innerHTML = '<p class="notification-empty">You\'re all caught up.</p>';
-    } else {
-      list.replaceChildren(...alerts.slice(0, 5).map((alert) => {
-        const item = document.createElement("a");
-        item.className = `notification-item${alert.read ? "" : " unread"}`;
-        item.href = alert.areaId ? `risk-map.html?area=${encodeURIComponent(alert.areaId)}` : "alerts.html";
-        const title = document.createElement("b"); title.textContent = alert.message;
-        const detail = document.createElement("small"); detail.textContent = alert.area || (alert.type === "system" ? "System update" : "Risk notification");
-        item.append(title, detail); return item;
-      }));
+      return;
     }
+    list.replaceChildren(...alerts.slice(0, 5).map((alert) => {
+      const item = document.createElement("a");
+      item.className = `notification-item${alert.read ? "" : " unread"}`;
+      item.href = alert.areaId ? `risk-map.html?area=${encodeURIComponent(alert.areaId)}` : "alerts.html";
+      const title = document.createElement("b"); title.textContent = alert.message ?? "—";
+      const detail = document.createElement("small"); detail.textContent = alert.area || (alert.type === "system" ? "System update" : "Risk notification");
+      item.append(title, detail); return item;
+    }));
   };
-  void refreshNotifications().catch((error) => {
-    shell.dispatchEvent(new CustomEvent("app:toast", { bubbles: true, detail: { message: "Notifications could not be loaded.", type: "error" } }));
-    console.error("Unable to load notification center", error);
+  const refreshNotifications = async () => {
+    const alerts = await listAlerts();
+    const unread = alerts.filter((alert) => !alert.read).length;
+    setSharedData({ notifications: alerts, alertCount: unread });
+    return alerts;
+  };
+  const unsubscribeNotifications = subscribeToSharedData(["notifications", "alertCount"], renderNotifications);
+  const stopSharedRefresh = startRefreshTimer({
+    notifications: refreshNotifications,
+    riskScores: async () => setSharedData({ riskScores: await fetchCityRisk() }),
+    weather: async () => setSharedData({ weather: await fetchWeatherAnalysis() }),
+  }, {
+    intervalMs: 60_000,
+    onError: (error, resource) => {
+      console.error(`Unable to refresh shared ${resource} data.`, error);
+      if (resource === "notifications") {
+        const list = notificationPanel.querySelector(".alerts-popover-list");
+        list.replaceChildren();
+        const message = document.createElement("p");
+        message.className = "notification-empty";
+        message.textContent = error.message || "Notifications could not be loaded.";
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.className = "button button-secondary button-sm";
+        retry.textContent = "Retry";
+        retry.addEventListener("click", () => { void refreshNotifications().catch((retryError) => console.error("Unable to load notification center.", retryError)); }, { once: true });
+        list.append(message, retry);
+      }
+    },
   });
+  window.addEventListener("pagehide", () => {
+    unsubscribeNotifications();
+    stopSharedRefresh();
+  }, { once: true });
   notificationButton.addEventListener("click", async () => {
     const open = notificationPanel.hidden;
     notificationPanel.hidden = !open;
@@ -140,7 +182,7 @@ export function renderLayout(shell, page, user) {
     if (open) {
       try { await refreshNotifications(); }
       catch (error) {
-        shell.dispatchEvent(new CustomEvent("app:toast", { bubbles: true, detail: { message: "Notifications could not be loaded.", type: "error" } }));
+        notificationPanel.querySelector(".alerts-popover-list").textContent = error.message || "Notifications could not be loaded.";
         console.error("Unable to load notification center", error);
       }
     }

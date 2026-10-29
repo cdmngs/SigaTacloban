@@ -5,4 +5,4 @@
 .chart-card-plot{position:relative;min-width:0;height:230px}
 .chart-card-plot canvas{position:relative;z-index:1;width:100%!important;height:100%!important}
 .chart-empty-note{position:absolute;z-index:2;inset:0;display:grid;place-items:center;color:var(--color-text-muted);font-size:10px;pointer-events:none}
-.chart-card-plot:has(canvas:not(:empty)) .chart-empty-note{display:none}
+.chart-empty-note[hidden]{display:none}

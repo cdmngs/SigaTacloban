@@ -4,9 +4,9 @@
 @media(max-width:480px){.phase4-heading h1{font-size:18px}.alerts-header-actions .button{min-height:29px}.alert-tabs button{font-size:7px}.alert-filters select{width:110px}.alert-filters input{font-size:7px}.operational-alert{grid-template-columns:25px minmax(0,1fr);}.alert-score{grid-column:2;grid-row:2;flex-direction:row;justify-content:flex-start;margin-top:2px}.alert-actions{grid-column:2;grid-row:4}.alert-body{grid-column:2}.alert-icon-tile{grid-row:1/3}.alert-weather-chips span{font-size:6px}.role-recipient-grid{gap:8px 5px}}
 .alert-weather-chips svg,.alerts-empty .empty-icon svg{width:14px;height:14px;stroke-width:2;color:currentColor;vertical-align:middle}
 
-.modal-panel.alert-rules-modal{width:min(560px,calc(100vw - 32px));height:min(760px,calc(100dvh - 32px));max-height:calc(100dvh - 32px);padding:0;display:flex;flex-direction:column;overflow:hidden}
+.modal-panel.alert-rules-modal{width:min(560px,calc(100vw - 32px));height:auto;max-height:min(760px,calc(100dvh - 32px));padding:0;display:flex;flex-direction:column;overflow:hidden}
 .modal-panel.alert-rules-modal>header{min-height:54px;flex:none}
-.modal-panel.alert-rules-modal>.dialog-copy{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:14px 20px;scrollbar-width:thin;scrollbar-color:var(--color-border) transparent}
+.modal-panel.alert-rules-modal>.dialog-copy{min-height:0;flex:0 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:14px 20px;scrollbar-width:thin;scrollbar-color:var(--color-border) transparent}
 .modal-panel.alert-rules-modal>.dialog-copy::-webkit-scrollbar{width:6px}
 .modal-panel.alert-rules-modal>.dialog-copy::-webkit-scrollbar-thumb{border-radius:6px;background:var(--color-border)}
 .alert-rules-content{display:flex;flex-direction:column;gap:14px}
@@ -32,7 +32,7 @@
 .modal-panel.alert-rules-modal>.rules-actions{min-height:60px;flex:none;margin:0;padding:10px 20px;border-top:1px solid var(--color-border)}
 .modal-panel.alert-rules-modal>.rules-actions .button{min-height:36px;padding-inline:14px;font-size:11px}
 @media(max-width:480px){
-  .modal-panel.alert-rules-modal{height:min(760px,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
+  .modal-panel.alert-rules-modal{max-height:min(760px,calc(100dvh - 24px))}
   .modal-panel.alert-rules-modal>.dialog-copy{padding:12px 16px}
   .alert-rules-content .rule-threshold-row{grid-template-columns:minmax(70px,82px) minmax(0,1fr) 38px;gap:7px}
   .alert-rules-content .role-recipient-grid{column-gap:32px}
