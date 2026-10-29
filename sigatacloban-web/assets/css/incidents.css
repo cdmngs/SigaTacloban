@@ -57,3 +57,5 @@
   .incident-empty-table .empty-state{min-height:0}
 }
 .incident-form-grid label small{color:var(--color-status-danger);font-weight:400}
+.incidents-page .incidents-table-card,.incidents-page .incident-table-scroll{min-width:0;max-width:100%}
+.incidents-page .incident-table-scroll{width:100%;overflow-x:auto}

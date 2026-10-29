@@ -1,0 +1,1 @@
+{"data":{"kpis":{"incidentCount":12,"highRiskAreas":1,"predictedHotspots":1,"activeStations":1},"topBarangays":[{"id":"brgy-001","name":"Barangay 1","riskScore":62,"riskLevel":"High"}],"monthlyIncidents":[{"year":2026,"month":"October","count":12}],"recentIncidents":[{"id":"INC-2026-0001","barangay":"Barangay 1","date":"2026-10-27","fireClass":"Residential"}]},"meta":{}}

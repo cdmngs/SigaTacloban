@@ -1,7 +1,13 @@
-import { USE_MOCKS } from "./config.js";
-import { requestJson } from "./client.js";
-import { mockDelay } from "./mockDelay.js";
-export async function fetchStations() {
-  if (USE_MOCKS) { await mockDelay(); return []; }
-  return requestJson("/stations");
+import { api, unwrapResponse } from "./client.js";
+
+export async function fetchStations(options = {}) {
+  return unwrapResponse(await api.get("/stations", { ...options, mockSample: "stations-list" }));
+}
+
+export async function createStation(payload, options = {}) {
+  return unwrapResponse(await api.post("/stations", payload, { ...options, mockSample: "stations-create" }));
+}
+
+export async function updateStation(id, payload, options = {}) {
+  return unwrapResponse(await api.patch(`/stations/${encodeURIComponent(id)}`, payload, { ...options, mockSample: "stations-update" }));
 }

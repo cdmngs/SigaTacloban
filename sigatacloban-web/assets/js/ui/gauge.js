@@ -1,25 +1,44 @@
-export function renderGauge(container, score = 82, thresholds = { lowMax: 29, moderateMax: 54, highMax: 79 }) {
-  const hasData = Number.isFinite(score) && score >= 0 && score <= 100;
+import { formatNumber, RISK_SCORE_MAX, RISK_SCORE_MIN } from "../utils/format.js";
+import { appStore, subscribeToSharedData } from "../core/store.js";
+import { RISK_LEVELS, riskLevelForScore } from "../utils/risk.js";
+
+const gaugeSubscriptions = new WeakMap();
+
+export function renderGauge(container, score = null, thresholds = null) {
+  gaugeSubscriptions.get(container)?.();
+  gaugeSubscriptions.delete(container);
+  const configured = appStore.getState().riskThresholds;
+  const boundaries = thresholds || {
+    lowMax: configured.moderate - 1,
+    moderateMax: configured.high - 1,
+    highMax: configured.veryHigh - 1,
+  };
+  const hasData = Number.isFinite(score) && score >= RISK_SCORE_MIN && score <= RISK_SCORE_MAX;
   const scoreValue = hasData ? score : 0;
-  const theta = Math.PI - (scoreValue / 100) * Math.PI;
+  const theta = Math.PI - (scoreValue / RISK_SCORE_MAX) * Math.PI;
   const x = 100 + 75 * Math.cos(theta);
   const y = 100 - 75 * Math.sin(theta);
-  const labelText = !hasData ? "NO DATA" : scoreValue <= thresholds.lowMax ? "LOW" : scoreValue <= thresholds.moderateMax ? "MODERATE" : scoreValue <= thresholds.highMax ? "HIGH" : "VERY HIGH";
+  const riskKey = hasData ? riskLevelForScore(scoreValue, {
+    moderate: boundaries.lowMax + 1,
+    high: boundaries.moderateMax + 1,
+    veryHigh: boundaries.highMax + 1,
+  }) : null;
+  const labelText = RISK_LEVELS.find(({ key }) => key === riskKey)?.label || "—";
   const gauge = document.createElement("div");
   gauge.className = `risk-gauge${!hasData ? " gauge-no-data" : scoreValue >= 80 ? " gauge-pulse" : ""}`;
   const arc = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   arc.setAttribute("viewBox", "0 0 200 118");
   arc.setAttribute("role", "img");
   arc.setAttribute("aria-label", hasData ? `Risk score ${scoreValue}, ${labelText.toLowerCase()}` : "Risk score unavailable");
-  for (const [d, color] of [
-    ["M25 100 A75 75 0 0 1 58 35", "#2E9E5B"],
-    ["M58 35 A75 75 0 0 1 99 25", "#F4C430"],
-    ["M99 25 A75 75 0 0 1 151 45", "#F77F00"],
-    ["M151 45 A75 75 0 0 1 175 100", "#D62828"],
+  for (const [d, level] of [
+    ["M25 100 A75 75 0 0 1 58 35", RISK_LEVELS[0]],
+    ["M58 35 A75 75 0 0 1 99 25", RISK_LEVELS[1]],
+    ["M99 25 A75 75 0 0 1 151 45", RISK_LEVELS[2]],
+    ["M151 45 A75 75 0 0 1 175 100", RISK_LEVELS[3]],
   ]) {
     const segment = document.createElementNS("http://www.w3.org/2000/svg", "path");
     segment.setAttribute("d", d);
-    segment.setAttribute("stroke", color);
+    segment.setAttribute("stroke", level.color);
     arc.append(segment);
   }
   if (!hasData) {
@@ -49,15 +68,18 @@ export function renderGauge(container, score = 82, thresholds = { lowMax: 29, mo
   hub.setAttribute("class", "gauge-hub");
   arc.append(hub);
   const scoreElement = document.createElement("strong");
-  scoreElement.textContent = hasData ? String(score) : "—";
+  scoreElement.textContent = hasData ? formatNumber(score) : "—";
   const caption = document.createElement("small");
   caption.textContent = labelText;
   const minimum = document.createElement("span");
   minimum.className = "gauge-min";
-  minimum.textContent = "0";
+  minimum.textContent = formatNumber(RISK_SCORE_MIN);
   const maximum = document.createElement("span");
   maximum.className = "gauge-max";
-  maximum.textContent = "100";
+  maximum.textContent = formatNumber(RISK_SCORE_MAX);
   gauge.append(arc, scoreElement, caption, minimum, maximum);
   container.replaceChildren(gauge);
+  if (!thresholds) {
+    gaugeSubscriptions.set(container, subscribeToSharedData("riskThresholds", () => renderGauge(container, score)));
+  }
 }

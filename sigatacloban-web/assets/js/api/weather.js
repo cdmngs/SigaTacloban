@@ -1,11 +1,9 @@
-import { USE_MOCKS } from "./config.js";
-import { requestJson } from "./client.js";
-import { mockDelay } from "./mockDelay.js";
-export async function fetchWeather() {
-  if (USE_MOCKS) { await mockDelay(); return null; }
-  return requestJson("/weather/now");
+import { api, unwrapResponse } from "./client.js";
+
+export async function fetchWeather(options = {}) {
+  return unwrapResponse(await api.get("/weather/current", { ...options, mockSample: "weather-current" }));
 }
-export async function fetchWeatherForecast() {
-  if (USE_MOCKS) { await mockDelay(); return []; }
-  return requestJson("/weather/forecast");
+
+export async function fetchWeatherForecast(options = {}) {
+  return unwrapResponse(await api.get("/weather/forecast", { ...options, mockSample: "weather-forecast" }));
 }

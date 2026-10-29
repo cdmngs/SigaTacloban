@@ -1,0 +1,1 @@
+{"data":{"riskScore":65,"riskLevel":"High","delta":3,"factors":[{"label":"Temperature","value":64}],"explanation":"Scenario conditions increase estimated risk.","modelVersion":"RF-2.4","confidence":0.89},"meta":{}}

@@ -1,0 +1,1 @@
+{"data":{"models":[{"id":"model-001","name":"Random Forest v2.4","active":true,"metrics":{"accuracy":89.2,"precision":87.1,"recall":85.5,"f1":86.3,"rocAuc":91.4},"confusionMatrix":{"labels":["Low","Moderate","High","Very High"],"values":[[20,2,0,0],[1,17,3,0],[0,2,16,2],[0,0,1,18]]}}],"fileName":"incidents.csv","uploadedRecords":100,"steps":[]},"meta":{}}

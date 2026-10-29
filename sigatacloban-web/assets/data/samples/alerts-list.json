@@ -1,0 +1,1 @@
+{"data":[{"id":"alert-001","type":"risk alert","riskLevel":"High","message":"Elevated fire risk","createdAt":"2026-10-28T04:00:00Z","read":false,"acknowledged":false,"area":"Barangay 1","areaId":"brgy-001","riskScore":62,"topFactors":["Historical frequency"],"weather":{"temperatureC":30,"humidityPercent":65,"windKph":12}}],"meta":{"total":1,"page":1,"pageSize":50}}

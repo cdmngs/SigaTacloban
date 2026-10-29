@@ -1,3 +1,5 @@
+import { riskLevelForScore } from "./risk.js";
+
 const RISK_FACTOR_WEIGHTS = Object.freeze([30, 20, 15, 10, 10, 15]);
 const WEATHER_SCENARIO_CALIBRATION = 6.87;
 const clamp = (value, minimum = 0, maximum = 100) => Math.max(minimum, Math.min(maximum, value));
@@ -35,7 +37,7 @@ export function simulateRisk(area, conditions) {
   });
   return {
     score,
-    level: score < 40 ? "low" : score < 60 ? "moderate" : score < 80 ? "high" : "veryhigh",
+    level: riskLevelForScore(score),
     delta: score - base,
     factors,
   };

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { getManagedUsers, getUserInitials } from "../assets/js/core/auth.js";
-import { filterNavigationGroups, rolePermissions } from "../assets/js/core/permissions.js";
-import { filterIncidents } from "../assets/js/api/incidentsPartA.js";
+import { canAccessRoute, filterNavigationGroups, rolePermissions, setRolePermissionsFromApi } from "../assets/js/core/permissions.js";
+import { filterIncidents } from "../assets/js/api/incidents.js";
 import { toCsv } from "../assets/js/utils/csv.js";
 import { simulateRisk } from "../assets/js/utils/simulate-risk.js";
 import { BARANGAY_NAMES } from "../assets/js/api/barangays.js";
@@ -86,6 +86,19 @@ test("navigation menu groups are filtered by the same role permissions as route 
     assert.equal(filterNavigationGroups(role, groups).some((group) => group.links.length === 0), false);
   }
   assert.equal(filterNavigationGroups("analyst", groups).flatMap((group) => group.links).some(([, slug]) => slug === "users"), false);
+});
+
+test("API role permissions drive routes and do not inherit static access", () => {
+  const matrix = {
+    customAdmin: { routes: ["/users"], capabilities: { userManagement: true } },
+    readOnly: { users: ["read"] },
+  };
+  setRolePermissionsFromApi(matrix);
+  assert.equal(canAccessRoute("customAdmin", "/users"), true);
+  assert.equal(rolePermissions.customAdmin.capabilities.userManagement, true);
+  assert.equal(canAccessRoute("readOnly", "/users"), false);
+  assert.equal(rolePermissions.readOnly.capabilities.userManagement, false);
+  assert.deepEqual(filterNavigationGroups("readOnly", [{ label: "Admin", links: [["Users", "users"]] }]), []);
 });
 
 test("incident filtering, date bounds, sorting and pagination are deterministic", () => {
